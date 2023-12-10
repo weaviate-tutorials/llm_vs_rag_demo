@@ -1,9 +1,6 @@
 import weaviate
 import weaviate.classes as wvc
 import os
-import logging
-import loggerconfig
-from pprint import pprint
 
 
 client = weaviate.connect_to_local(

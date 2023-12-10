@@ -39,6 +39,7 @@ chunks = client.collections.create(
         wvc.Property(
             name="url",
             data_type=wvc.DataType.TEXT,
+            skip_vectorization=True
         ),
         wvc.Property(
             name="chunk_no",

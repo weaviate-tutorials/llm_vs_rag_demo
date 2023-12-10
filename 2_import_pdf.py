@@ -15,28 +15,21 @@ client = weaviate.connect_to_local(
 )
 chunks = client.collections.get("Chunk")
 
-for arxiv_url in [
-    "https://arxiv.org/pdf/2310.11703.pdf",
-    "https://arxiv.org/abs/2305.05665",
-    "https://arxiv.org/abs/2307.04821",
-    "https://arxiv.org/abs/2311.00681",
-    "https://arxiv.org/abs/2310.03214",
-    "https://arxiv.org/pdf/2309.01431.pdf",
-    "https://arxiv.org/abs/2202.01110",
+for (title, pdf_path) in [
+    ("Sparse, Dense, and Attentional Representations for Text Retrieval", "dl_data/tacl_a_00369.pdf")
 ]:
-    logging.info(f"Importing {arxiv_url}")
+    logging.info(f"Importing {pdf_path}")
 
-    arxiv_data = media.get_arxiv_paper(arxiv_url)
-
-    text_chunks = utils.chunk_text(arxiv_data["text"])
+    pdf_text = media._parse_pdf(pdf_path)
+    text_chunks = utils.chunk_text(pdf_text)
 
     logging.info(f"Vectorizing {len(text_chunks)} chunks.")
     data_objects = list()
     for i, text_chunk in enumerate(text_chunks):
         props = {
-            "title": arxiv_data["title"],
+            "title": title,
             "body": text_chunk,
-            "url": arxiv_data["url"],
+            "url": pdf_path,
             "chunk_no": i + 1,
         }
         data_objects.append(
