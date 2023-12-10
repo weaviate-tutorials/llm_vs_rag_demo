@@ -1,6 +1,9 @@
 import weaviate
 import weaviate.classes as wvc
 import random
+import logging
+import loggerconfig
+
 
 client = weaviate.connect_to_local()
 

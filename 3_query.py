@@ -2,14 +2,9 @@ import weaviate
 import weaviate.classes as wvc
 import os
 import logging
+import loggerconfig
 from pprint import pprint
 
-
-logging.basicConfig(
-    level=logging.INFO, format="[%(asctime)s] %(levelname)s in %(module)s: %(message)s"
-)
-
-logger = logging.getLogger(__name__)
 
 client = weaviate.connect_to_local(
     headers={
