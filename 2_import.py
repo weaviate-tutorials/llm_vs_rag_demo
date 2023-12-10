@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 client = weaviate.connect_to_local(
     headers={
         "X-OpenAI-Api-Key": os.getenv("OPENAI_APIKEY"),
-        "X-Cohere-Api-Key": os.getenv("COHERE_APIKEY")
+        "X-Cohere-Api-Key": os.getenv("COHERE_APIKEY"),
     }
 )
 chunks = client.collections.get("Chunk")
@@ -27,7 +27,7 @@ for arxiv_url in [
     "https://arxiv.org/abs/2311.00681",
     "https://arxiv.org/abs/2310.03214",
     "https://arxiv.org/pdf/2309.01431.pdf",
-    "https://arxiv.org/abs/2202.01110"
+    "https://arxiv.org/abs/2202.01110",
 ]:
     logger.info(f"Importing {arxiv_url}")
 
@@ -42,14 +42,17 @@ for arxiv_url in [
             "title": arxiv_data["title"],
             "body": text_chunk,
             "url": arxiv_data["url"],
-            "chunk_no": i + 1
+            "chunk_no": i + 1,
         }
-        data_objects.append(wvc.DataObject(
-            properties=props,
-            uuid=generate_uuid5(props),
-        ))
+        data_objects.append(
+            wvc.DataObject(
+                properties=props,
+                uuid=generate_uuid5(props),
+            )
+        )
 
     import_response = chunks.data.insert_many(data_objects)
 
-    print(import_response.has_errors)
-    print(len(import_response.all_responses))
+    logger.info(f"Has errors? {import_response.has_errors}")
+    if import_response.has_errors:
+        logger.info(import_response.errors)
