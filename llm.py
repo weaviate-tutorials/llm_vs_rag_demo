@@ -2,11 +2,17 @@ from openai import OpenAI
 import os
 from pprint import pprint
 
-client = OpenAI()
-client.api_key = os.getenv("OPENAI_APIKEY")
+PROMPT_TEMPLATE = " Keep the answer relatively short, such as within a few paragraphs or within 5-6 main bullet points."
+
+
+def init_openai():
+    client = OpenAI()
+    client.api_key = os.getenv("OPENAI_APIKEY")
+    return client
 
 
 def get_llm_response(prompt):
+    client = init_openai()
     response = client.chat.completions.create(
         model="gpt-4-1106-preview",
         messages=[
