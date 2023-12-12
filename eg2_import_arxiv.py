@@ -1,6 +1,7 @@
 import weaviate
 import weaviate.classes as wvc
 from weaviate.util import generate_uuid5
+from helper import COLL_NAME
 from distyll import media, utils
 import os
 import logging
@@ -14,9 +15,9 @@ client = weaviate.connect_to_local(
     }
 )
 
-cname = "ChunkGPT35"
+chunks = client.collections.get(COLL_NAME)
+logging.info(f"Adding data to {COLL_NAME}")
 
-chunks = client.collections.get(cname)
 for arxiv_url in [
     "https://arxiv.org/pdf/2310.11703.pdf",
     "https://arxiv.org/abs/2305.05665",
@@ -58,4 +59,4 @@ for arxiv_url in [
 
     logging.info(f"Has errors? {import_response.has_errors}")
     if import_response.has_errors:
-        logging.info(import_response.errors)
+        logging.info(f"{len(import_response.errors)} errors found.")

@@ -1,7 +1,7 @@
 import weaviate
 import os
 
-COLL_NAME = "ChunkGPT35"
+COLL_NAME = "Chunk"
 
 preset_prompts = [
     "Select a prompt",

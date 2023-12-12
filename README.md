@@ -16,10 +16,9 @@ This demo shows benefits of using retrieval augmented generation over vanilla LL
 
 There is also a multi-modal example - documentation to come :).
 
-## License
+## Build amazing GenAI apps with Weaviate
 
-This project is licensed under the terms of the MIT license.
-
-## Contact
-
-TBC
+- Start with the [Quickstart guide](https://weaviate.io/developers/weaviate/quickstart)
+- The [RAG guide](https://weaviate.io/developers/weaviate/starter-guides/generative) is a good next step 
+- The [Academy](https://weaviate.io/developers/academy) is a holistic guide combining theory & practice
+- The [Recipes](https://github.com/weaviate/recipes) show you practical end-to-end examples

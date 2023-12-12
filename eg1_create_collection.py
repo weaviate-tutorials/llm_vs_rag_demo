@@ -9,7 +9,7 @@ client = weaviate.connect_to_local()
 i = input("Delete existing collections? (Y for yes, any other key for no):")
 if i == "y":
     client.collections.delete("Chunk")
-    client.collections.delete("ChunkGPT35")
+    client.collections.delete("ChunkAlt")
 
 client.collections.create(
     name="Chunk",
@@ -38,8 +38,8 @@ client.collections.create(
 )
 
 client.collections.create(
-    name="ChunkGPT35",
-    vectorizer_config=wvc.Configure.Vectorizer.text2vec_openai(),
+    name="ChunkAlt",
+    vectorizer_config=wvc.Configure.Vectorizer.text2vec_cohere(),
     generative_config=wvc.Configure.Generative.openai(model="gpt-3.5-turbo"),
     properties=[
         wvc.Property(
