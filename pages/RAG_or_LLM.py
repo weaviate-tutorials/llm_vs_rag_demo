@@ -1,6 +1,3 @@
-import weaviate
-import weaviate.classes as wvc
-import os
 import logging
 import loggerconfig
 import streamlit as st
