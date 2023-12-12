@@ -9,21 +9,13 @@ client = weaviate.connect_to_local()
 
 vectorizer = random.choice(
     [
-        # wvc.Configure.Vectorizer.text2vec_aws(
-        #     model="amazon.titan-embed-text-v1"
-        # ),
         # wvc.Configure.Vectorizer.text2vec_cohere(
         #     model="embed-multilingual-v3.0"
         # ),
-        # wvc.Configure.Vectorizer.text2vec_huggingface(
-        #     model="sentence-transformers/all-MiniLM-L6-v2"
-        # ),
         wvc.Configure.Vectorizer.text2vec_openai(
-            model="text-embedding-ada-002"
+            model="ada",
+            model_version="002"
         ),
-        # wvc.Configure.Vectorizer.text2vec_palm(
-        #     model_id="embedding-gecko-001"
-        # ),
     ]
 )
 
@@ -57,6 +49,26 @@ chunks = client.collections.create(
         wvc.Property(
             name="chunk_no",
             data_type=wvc.DataType.INT,
+        ),
+    ],
+)
+
+client.collections.delete("MultiModalCollection")
+multimodal = client.collections.create(
+    name="MultiModalCollection",
+    vectorizer_config=wvc.Configure.Vectorizer.multi2vec_clip(
+        image_fields="image"
+    ),
+    generative_config=generative,
+    properties=[
+        wvc.Property(
+            name="text",
+            data_type=wvc.DataType.TEXT,
+            tokenization=wvc.Tokenization.FIELD,
+        ),
+        wvc.Property(
+            name="image",
+            data_type=wvc.DataType.BLOB,
         ),
     ],
 )

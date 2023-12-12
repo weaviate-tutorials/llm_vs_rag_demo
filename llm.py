@@ -2,7 +2,13 @@ from openai import OpenAI
 import os
 from pprint import pprint
 
-PROMPT_TEMPLATE = " Keep the answer relatively short, such as within a few paragraphs or within 5-6 main bullet points."
+PROMPT_TEMPLATE = """
+ IMPORTANT NOTE: The answer must be short, such as within 2-5 sentences, 
+or within 2-4 short bullet points, each bullet point being a sentence or two maximum.
+"""
+
+RAG_SUFFIX = """
+"""
 
 
 def init_openai():

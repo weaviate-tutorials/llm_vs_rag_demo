@@ -23,8 +23,10 @@ for arxiv_url in [
     # "https://arxiv.org/abs/2310.03214",
     # "https://arxiv.org/pdf/2309.01431.pdf",
     # "https://arxiv.org/abs/2202.01110",
-    "https://arxiv.org/pdf/2103.04831.pdf",
-    "https://arxiv.org/pdf/2104.08663.pdf"
+    # "https://arxiv.org/pdf/2103.04831.pdf",
+    # "https://arxiv.org/pdf/2104.08663.pdf"
+    "https://arxiv.org/pdf/2312.06037.pdf",
+    "https://arxiv.org/pdf/2312.06500.pdf",
 ]:
     logging.info(f"Importing {arxiv_url}")
 

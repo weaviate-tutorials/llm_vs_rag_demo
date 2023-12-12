@@ -16,7 +16,8 @@ client = weaviate.connect_to_local(
 chunks = client.collections.get("Chunk")
 
 for (title, pdf_path) in [
-    ("Sparse, Dense, and Attentional Representations for Text Retrieval", "dl_data/tacl_a_00369.pdf")
+    ("Sparse, Dense, and Attentional Representations for Text Retrieval", "dl_data/tacl_a_00369.pdf"),
+    ("Innovating for the hybrid future of work", "dl_data/HybridFutureOfWork.pdf")
 ]:
     logging.info(f"Importing {pdf_path}")
 
