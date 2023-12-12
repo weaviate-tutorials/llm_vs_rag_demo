@@ -2,20 +2,21 @@ import logging
 import loggerconfig
 import streamlit as st
 import llm
-from helper import preset_prompts, get_client
+from helper import preset_prompts, get_client, COLL_NAME
 
 
 N_CHUNKS = 5
 
 client = get_client()
-chunks = client.collections.get("Chunk")
+
+chunks = client.collections.get(COLL_NAME)
 
 st.set_page_config(
     page_title="RAG: LLMs + Weaviate",
     page_icon="🤖",
 )
 
-st.title("RAG to the rescue!")
+st.title("LLM vs RAG!")
 agg_resp = chunks.aggregate.over_all(total_count=True)
 obj_count = agg_resp.total_count
 
@@ -33,12 +34,11 @@ full_prompt = prompt + llm.PROMPT_TEMPLATE
 
 top_col1, top_col2 = st.columns(2, gap="medium")
 with top_col1:
-    st.subheader("LLM only (dumb genius)")
+    st.subheader("LLM only")
     st.write("This simply asks the LLM for an answer to our question.")
 with top_col2:
-    st.subheader("With help from Weaviate")
-    st.write(f"There are {obj_count} text chunks in the database.")
-    st.write(f"This will use those to help the LLM answer the question.")
+    st.subheader("RAG")
+    st.write(f"This will prompt the LLM with retrieved data from Weaviate.")
     if len(prompt) > 0:
         search_response = chunks.query.near_text(
             query=prompt,

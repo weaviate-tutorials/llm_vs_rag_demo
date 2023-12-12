@@ -13,18 +13,20 @@ client = weaviate.connect_to_local(
         "X-Cohere-Api-Key": os.getenv("COHERE_APIKEY"),
     }
 )
-chunks = client.collections.get("Chunk")
 
+cname = "ChunkGPT35"
+
+chunks = client.collections.get(cname)
 for arxiv_url in [
-    # "https://arxiv.org/pdf/2310.11703.pdf",
-    # "https://arxiv.org/abs/2305.05665",
-    # "https://arxiv.org/abs/2307.04821",
-    # "https://arxiv.org/abs/2311.00681",
-    # "https://arxiv.org/abs/2310.03214",
-    # "https://arxiv.org/pdf/2309.01431.pdf",
-    # "https://arxiv.org/abs/2202.01110",
-    # "https://arxiv.org/pdf/2103.04831.pdf",
-    # "https://arxiv.org/pdf/2104.08663.pdf"
+    "https://arxiv.org/pdf/2310.11703.pdf",
+    "https://arxiv.org/abs/2305.05665",
+    "https://arxiv.org/abs/2307.04821",
+    "https://arxiv.org/abs/2311.00681",
+    "https://arxiv.org/abs/2310.03214",
+    "https://arxiv.org/pdf/2309.01431.pdf",
+    "https://arxiv.org/abs/2202.01110",
+    "https://arxiv.org/pdf/2103.04831.pdf",
+    "https://arxiv.org/pdf/2104.08663.pdf"
     # Hybrid car articles
     "https://arxiv.org/pdf/2311.11107.pdf",
     "https://arxiv.org/pdf/2309.17442.pdf",

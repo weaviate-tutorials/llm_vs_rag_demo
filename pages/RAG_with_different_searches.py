@@ -2,13 +2,14 @@ import logging
 import loggerconfig
 import streamlit as st
 import llm
-from helper import preset_prompts, get_client
+from helper import preset_prompts, get_client, COLL_NAME
 
 
 N_CHUNKS = 5
 
 client = get_client()
-chunks = client.collections.get("Chunk")
+chunks = client.collections.get(COLL_NAME)
+
 agg_resp = chunks.aggregate.over_all(total_count=True)
 obj_count = agg_resp.total_count
 
@@ -17,7 +18,7 @@ st.set_page_config(
     page_icon="🤖",
 )
 
-st.title("Why RAG needs great search.")
+st.title("LLM + Great search = 🧠")
 
 selected_prompt = st.selectbox(label="Select a prompt", options=preset_prompts)
 
@@ -30,7 +31,7 @@ else:
 
 search_query = st.text_input(label="Search our database to help the LLM", value="")
 search_type = st.selectbox(label="Search type", options=["Select one", "Keyword", "Vector", "Hybrid"])
-n_chunks_manual = st.number_input(label="Number of chunks to fetch", value=3)
+n_chunks_manual = st.number_input(label="Number of chunks to fetch", value=N_CHUNKS)
 full_prompt = prompt + llm.PROMPT_TEMPLATE
 
 
@@ -57,9 +58,8 @@ if len(search_query) > 0 and srch_query is not None:
         query=search_query,
         limit=n_chunks_manual,
     )
-    with st.expander("Chunks used:"):
-        for o in search_response.objects:
-            st.write(o.properties["title"][:20] + "...")
+    for o in search_response.objects:
+        with st.expander(o.properties["title"][:40] + "..."):
             st.caption("Chunk: " + str(int(o.properties["chunk_no"])))
             st.caption(o.properties["body"])
             st.divider()

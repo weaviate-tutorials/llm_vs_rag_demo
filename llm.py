@@ -20,7 +20,8 @@ def init_openai():
 def get_llm_response(prompt):
     client = init_openai()
     response = client.chat.completions.create(
-        model="gpt-4-1106-preview",
+        # model="gpt-4-1106-preview",
+        model="gpt-3.5-turbo-1106",
         messages=[
             {"role": "system", "content": "You are a helpful assistant."},
             {

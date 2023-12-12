@@ -10,7 +10,7 @@ st.set_page_config(
     page_icon="🤖",
 )
 
-st.title("LLMs by themselves")
+st.title("LLMs 🤖: Flying solo")
 
 
 selected_prompt = st.selectbox(label="Select a prompt", options=preset_prompts)
