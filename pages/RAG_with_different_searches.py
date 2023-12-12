@@ -5,10 +5,12 @@ import llm
 from helper import preset_prompts, get_client
 
 
-N_CHUNKS = 10
+N_CHUNKS = 5
 
 client = get_client()
 chunks = client.collections.get("Chunk")
+agg_resp = chunks.aggregate.over_all(total_count=True)
+obj_count = agg_resp.total_count
 
 st.set_page_config(
     page_title="RAG: LLMs + Weaviate",
@@ -18,70 +20,55 @@ st.set_page_config(
 st.title("Why RAG needs great search.")
 
 selected_prompt = st.selectbox(label="Select a prompt", options=preset_prompts)
-n_chunks_manual = st.number_input(label="Number of chunks to fetch", value=3)
 
 if selected_prompt == "Custom":
-    prompt = st.text_input(label="Ask the LLM anything.", value="")
+    prompt = st.text_area(label="Ask the LLM anything.", value="", height=50)
 elif selected_prompt == "Select a prompt":
     prompt = ""
 else:
     prompt = selected_prompt
 
-
+search_query = st.text_input(label="Search our database to help the LLM", value="")
+search_type = st.selectbox(label="Search type", options=["Select one", "Keyword", "Vector", "Hybrid"])
+n_chunks_manual = st.number_input(label="Number of chunks to fetch", value=3)
 full_prompt = prompt + llm.PROMPT_TEMPLATE
 
-st.subheader("Why search is key to better RAG")
-st.write("This will use Weaviate to help the LLM answer the question.")
-search_query = st.text_input(label="Search our database to help the LLM", value="")
 
 # e.g. try:
 # hybrid search difference, or hybridsearch
 
-top_col1, top_col2 = st.columns(2, gap="medium")
-with top_col1:
-    st.markdown("### Keyword search only")
-    if len(search_query) > 0:
-        search_response = chunks.query.bm25(
-            query=search_query,
-            limit=n_chunks_manual,
-        )
-        with st.expander("Chunks used:"):
-            for o in search_response.objects:
-                st.write(o.properties["title"] + " chunk no: " + str(o.properties["chunk_no"]))
-                st.caption(o.properties["body"])
-                st.divider()
-with top_col2:
-    st.markdown("### Hybrid search")
-    if len(search_query) > 0:
-        search_response = chunks.query.hybrid(
-            query=search_query,
-            limit=n_chunks_manual,
-        )
-        with st.expander("Chunks used:"):
-            for o in search_response.objects:
-                st.write(o.properties["title"] + " chunk no: " + str(o.properties["chunk_no"]))
-                st.caption(o.properties["body"])
-                st.divider()
+if search_type == "Keyword":
+    srch_query = chunks.query.bm25
+    gen_query = chunks.generate.bm25
+elif search_type == "Vector":
+    srch_query = chunks.query.near_text
+    gen_query = chunks.generate.near_text
+elif search_type == "Hybrid":
+    srch_query = chunks.query.hybrid
+    gen_query = chunks.generate.hybrid
+else:
+    srch_query = None
+    gen_query = None
 
 
-col1, col2 = st.columns(2, gap="medium")
+if len(search_query) > 0 and srch_query is not None:
+    search_response = srch_query(
+        query=search_query,
+        limit=n_chunks_manual,
+    )
+    with st.expander("Chunks used:"):
+        for o in search_response.objects:
+            st.write(o.properties["title"][:20] + "...")
+            st.caption("Chunk: " + str(int(o.properties["chunk_no"])))
+            st.caption(o.properties["body"])
+            st.divider()
 
-with col1:
-    st.markdown("### Response")
-    if len(search_query) > 0 and len(prompt) > 0:
-        rag_response = chunks.generate.bm25(
-            query=search_query,
-            grouped_task=prompt + llm.RAG_SUFFIX,
-            limit=n_chunks_manual,
-        )
-        st.write(rag_response.generated)
 
-with col2:
-    st.markdown("### Response")
-    if len(search_query) > 0 and len(prompt) > 0:
-        rag_response = chunks.generate.hybrid(
-            query=search_query,
-            grouped_task=prompt + llm.RAG_SUFFIX,
-            limit=n_chunks_manual,
-        )
-        st.write(rag_response.generated)
+st.markdown("### Response")
+if len(search_query) > 0 and len(prompt) > 0 and srch_query is not None:
+    rag_response = gen_query(
+        query=search_query,
+        grouped_task=prompt + llm.RAG_SUFFIX,
+        limit=n_chunks_manual,
+    )
+    st.write(rag_response.generated)

@@ -5,7 +5,7 @@ import llm
 from helper import preset_prompts, get_client
 
 
-N_CHUNKS = 10
+N_CHUNKS = 5
 
 client = get_client()
 chunks = client.collections.get("Chunk")
@@ -16,11 +16,13 @@ st.set_page_config(
 )
 
 st.title("RAG to the rescue!")
+agg_resp = chunks.aggregate.over_all(total_count=True)
+obj_count = agg_resp.total_count
 
 selected_prompt = st.selectbox(label="Select a prompt", options=preset_prompts)
 
 if selected_prompt == "Custom":
-    prompt = st.text_input(label="Ask the LLM anything.", value="")
+    prompt = st.text_area(label="Ask the LLM anything.", value="", height=50)
 elif selected_prompt == "Select a prompt":
     prompt = ""
 else:
@@ -35,17 +37,20 @@ with top_col1:
     st.write("This simply asks the LLM for an answer to our question.")
 with top_col2:
     st.subheader("With help from Weaviate")
-    st.write("This will use Weaviate to help the LLM answer the question.")
+    st.write(f"There are {obj_count} text chunks in the database.")
+    st.write(f"This will use those to help the LLM answer the question.")
     if len(prompt) > 0:
         search_response = chunks.query.near_text(
             query=prompt,
             limit=N_CHUNKS,
         )
+        st.markdown("#### Sources:")
+
         with st.expander("Chunks used:"):
             for o in search_response.objects:
-                st.write(o.properties["title"] + " chunk no: " + str(o.properties["chunk_no"]))
+                st.write(o.properties["title"][:20] + "...")
+                st.caption("Chunk: " + str(int(o.properties["chunk_no"])))
                 st.caption(o.properties["body"])
-                st.divider()
 
 
 col1, col2 = st.columns(2, gap="medium")

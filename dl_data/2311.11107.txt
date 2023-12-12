@@ -1,0 +1,1112 @@
+
+International Scholarly Research Network
+ISRN Signal Processing
+V olume 2011, Article ID 120351, 17pages
+doi:10.5402/2011/120351
+Research Article
+Estimation Strategies for the Condition Monitoring of a Battery
+System in a Hybrid Electric V ehicle
+S. A. Gadsden, M. Al-Shabi, and S. R. Habibi
+Department of Mechanical Engineering, McMa ster University, Hamilton, ON, Canada L8S 4L7
+Correspondence should be addressed to S. A. Gadsden, gadsdesa@mcmaster.ca
+Received 4 January 2011; Accepted 6 February 2011
+Academic Editors: L.-M. Cheng and F . Piazza
+Copyright © 2011 S. A. Gadsden et al. This is an open access article distributed under the Creative Commons Attribution License,
+which permits unrestricted use, distribution, and reproduction in any medium, provided the original work is properly cited.
+This paper discusses the application of condition monitoring to a b attery system used in a hybrid electric vehicle (HEV). Battery
+condition management systems (BCMSs) are employed to ensure the safe, e ﬃcient, and reliable operation of a battery, ultimately
+to guarantee the availability of electric power. This is critical for the case of the HEV to ensure greater overall energy e ﬃciency
+and the availability of reliable electrical supply. This paper considers the use of state and parameter estimation techniques forthe condition monitoring of batteries. A comparative study is presented in which the Kalman and the extended Kalman ﬁlters(KF/EKF), the particle ﬁlter (PF), the quadrature Kalman ﬁlter (QKF), and the smooth variable structure ﬁlter (SVSF) are used
+for battery condition monitoring. These comparisons are made b ased on estimation error, robustness, sensitivity to noise, and
+computational time.
+1. Introduction
+Condition monitoring is an essential process for fault
+detection and diagnosis. It involves monitoring system states
+or parameters over an operational period, where abnormal
+values or signiﬁcant changes would indicate a fault. Quiteoften direct measurements of the states are not availabledue to limitations in design or cost. In these cases, state
+and parameter estimation techniques can be used for infor-
+mation extraction. Condition monitoring of systems allowsproper maintenance to be scheduled, which helps reduceunscheduled downtime of manufacturing equipment, as well
+as the cost to repair damaged systems [ 1,2]. An important
+area for condition monitoring is energy management forhybrid electric (HEVs) and batte ry electric vehicles (BEVs).
+In general, HEVs have two power sources: a gasoline
+engine and an electric motor. In full hybrid vehicles, theengine and the motor can operate separately or simultane-
+ously. The motor is used mainly during acceleration, startup,
+reverse mode, and in regenerative braking. A traction batterypack is used to provide power to the motor. It is recharged bya generator or during regenerat ive braking. The performance
+of an HEV is largely dependent on a balance between
+the gasoline engine and the electric motor, optimized withrespect to fuel consumption based on vehicle conditions
+[3]. Many di ﬀerent types of control methods have been
+applied to balance the power and energy requirements ofHEVs, including fuzzy logic [ 4–6], genetic algorithms [ 7],
+dynamic programming [ 8,9], Pareto optimization [ 10], and
+intelligent mechanism designs [ 11]. These control strategies
+rely heavily on the availability of battery power to balance theoperation of the gasoline engine versus the electric motor.
+The available battery power may be obtained from the state-
+of-charge (SOC) information [ 3,12]. Further to the SOC,
+the battery state-of-health (SOH) is required in order to helpdetermine whether a battery would fail subject to a certain
+load [ 13]. The SOC cannot be measured directly with electric
+signals, and as such it often, needs to be estimated throughcurrent and voltage relationships [ 3]. Poor estimation or
+control of the SOC may lead to improper charging conditions
+and can degrade the e ﬃciency and reliability of the batteries
+[13]. Hence, proper condition monitoring of batteries plays a
+pivotal role in the optimization of HEV performance, as well
+as extending the lifetime and increasing the reliability of the
+batteries [ 14].
+State and parameter estimation techniques are an integral
+part of condition monitoring and are used when direct
+measurements of the states are not available. One of the most
+2 ISRN Signal Processing
+commonly studied methods for estimation is the Kalman
+ﬁlter (KF) for linear systems and its extended form (EKF)
+for nonlinear systems [ 15–19]. Operating conditions such
+as battery SOC, power fade, capacity fade, resistance, andinstantaneous available power have been estimated well
+using the EKF [ 17]. Other methods such as the sigma-point
+Kalman ﬁltering (SPKF) and support vector machine (SVM)have also been used for condition monitoring and faultdiagnosis [ 20–22].
+In critical applications, suc h as automotive that require
+added safety and reliability, the choice of the estimationmethod is very important and should be selected based
+on the linearity of the system, performance, robustness or
+sensitivity to noise and computational di ﬃculty and time. In
+relation to battery condition mo nitoring, this paper presents
+a quantitative and qu alitative comparison of the following
+methods: the Kalman and extended Kalman ﬁlters (KF/EKF),
+the particle ﬁlter (PF), the quadrature Kalman ﬁlter (QKF),and the smooth variable structure ﬁlter (SVSF).
+2. State and Parameter Estimation T echniques
+State and parameter estimation is essential for sensing andinformation processing in model-based condition monitor-
+ing. Estimation theory involves information extraction by
+tracking changes in physical parameters or operational statesof the system. This paper studies four popular strategies:
+the Kalman and the extended Kalman ﬁlters (KF/EKF), the
+particle ﬁlter (PF), the quadrature Kalman ﬁlter (QKF), andthe smooth variable structure ﬁlter (SVSF).
+2.1. Kalman and Extended Kalman Filters. Even after 50
+years, the Kalman ﬁlter (KF) remains the most studied and
+one of the most popular tools used in state estimation[23–26]. It may be applied to linear dynamic systems in
+the presence of Gaussian white noise, and provides an
+elegant and statistically optimal solution by minimizing the
+mean-squared error. The impact that the KF has had onestimation and control problems is considered by some sci-entists and engineers to be one of the greatest achievement
+in engineering and signal processing [ 26]. It is a method
+that utilizes measurements linearly related to the states, anderror covariance matrices, to generate a gain referred toas the Kalman gain. This gain is applied to the a priori
+state estimate, thus creating an a posteriori estimate. The
+estimation process continues in a predictor-corrector fashionwhile maintaining a statistically minimal state error covari-
+ance matrix for linear systems.
+The following two equations describe the system dynam-
+ic model and the measurement model used in general forstate estimation. Refer to Appendix A for a description of the
+nomenclature
+x
+k+1=Akxk+Bkuk+wk,
+zk+1=Ck+1xk+1+vk+1.(1)
+The next ﬁve equations form the KF algorithm and are
+used in an iterative fashion. Equation ( 2) extrapolates the a
+priori state estimate, and ( 3) is the corresponding a priorierror covariance. The Kalman gain may be calculated by ( 4),
+and is used to update the state estimate and error covariance,
+described by ( 5)a n d( 6), respectively.
+ˆxk+1|k=Akˆxk|k+Bkuk, (2)
+Pk+1|k=AkPk|kAT
+k+Qk,( 3 )
+Kk=Pk+1|kCT
+k[
+CkPk+1|kCT
+k+Rk]−1,( 4 )
+ˆxk+1|k+1=ˆxk+1|k+Kk[zk−Ckxk+1|k],( 5 )
+Pk+1|k+1=[I−KkCk]Pk+1|k. (6)
+The e ﬀects due to model uncertainties can have a
+large impact on the stability and performance of the KF[26,27]. For nonlinear systems, the EKF may be used. It
+is conceptually similar to the KF process. The nonlinear
+system and measurement matrices are linearized accordingto their corresponding Jacobian, which is a ﬁrst-order partial
+derivative. This linearization introduces uncertainties in the
+estimation process; such that overlooked nonlinearities int h es y s t e mm a yc a u s et h eE K Ft ob e c o m eu n s t a b l e[ 26].
+2.2. Particle Filter. The particle ﬁlter (PF) has many forms:
+Monte Carlo ﬁlters, interacting particle approximations [ 28],
+bootstrap ﬁlters [ 29], condensation algorithm [ 30], and
+survival of the ﬁttest [ 31], to name a few. Compared to the
+KF, it is newer, being introduced in 1993. Since then, thePF has become a very popular method for solving nonlin-ear estimation problems, ranging from predicting chemical
+processes to target tracking. The PF takes the Bayesian
+approach to dynamic state estimation, in which one attemptsto accurately represent the probability distribution function(PDF) of the values of interest [ 32]. The PDF contains all of
+the pertinent statistical information and may be considered
+as holding the solution to the estimation problem [ 32]. Es-
+sentially, the distribution holds a probability of values for the
+state being observed. The stronger or tighter the prediction
+PDF, the more accurate the state estimate.
+The PF obtains its name from the use of weighted
+particles or “point masses” that are distributed throughout
+the PDF to form an approximation. These particles are used
+in an iterative process to obtain new particles and associatedimportance weights, with the goal of creating a more accurateapproximation of the PDF. In general, as the number of
+implemented particles becomes large, the PDF becomes
+more accurate [ 32]. An important step in the PF is that of
+resampling, which eliminates particles with low weights and
+multiplies those with high weights [ 32]. This helps to avoid
+the degeneracy problem with the PF, which refers to onlyone particle having a signiﬁcant importance weight after alarge number of recursions. Furthermore, it also increases the
+accuracy of the PDF approximation by replicating particles
+with high weights. The sequential importance resampling(SIR) algorithm is a very popular form of the PF and may besummarized by ( 7)t o( 10). The ﬁrst equation draws samples
+or particles from the proposal distribution.
+x
+(n)
+k∼π(
+xk|x(n)
+k−1,yk)
+. (7)
+ISRN Signal Processing 3
+The next equation updates the importance weights up to a
+normalizing constant
+ˆω(n)
+k=ω(n)
+k−1p(
+yk|x(n)
+k)
+p(
+x(n)
+k|x(n)
+k−1)
+π(
+xk|x(n)
+k−1,yk). (8)
+Next, the normalized weights are calculated for each particle
+ω(n)
+k=ˆω(n)
+k
+∑n
+i=1ˆω(i)
+k. (9)
+Finally, a constant known as the e ﬀective number of
+particles is calculated as shown in ( 10). Resampling is
+performed if the e ﬀective number of particles is lower than
+some design threshold
+ˆNeﬀ=1
+∑n
+i=1(
+ω(i)
+k)2. (10)
+2.3. Quadrature Kalman Filter. Similar to the PF, the quadra-
+ture Kalman ﬁlter (QKF) is a type of Bayesian ﬁlter that isable to model dynamic processes which are nonlinear andsubject to non-Gaussian noise. In 2007, it was proposed that
+a set of Gauss-Hermite quadrature points could be used to
+parameterize the PDF [ 33,34]. When compared with the
+EKF, it was found that the QKF method provides a moreaccurate least-squares solution [ 33].Figure 1 shows the PDF
+of a nonlinearly transformed Gaussian random variable. The
+mean of the EKF appears to be biased, and the covarianceis obviously far from the true covariance. However, the QKF
+mean and covariance match the true values quite well, with
+the 5 point QKF working the best. The main drawback tothis method is the fact that the number of terms used inthe Gaussian sum grows exponentially, which means that
+more memory will be used over a longer period of time [ 33].
+The process of this ﬁlter is similar to the PF, in the sensethat it may be solved recursively using two stages (time andmeasurement update). Please refer to Appendix B for the full
+QKF algorithm.
+2.4. Smooth Variable Structure Filter. In 2002, the variable
+structure ﬁlter (VSF) was introduced as a new predictor-corrector method used for state and parameter estimation[27,35]. It is a type of sliding mode estimator, where gain
+switching is used to ensure that the estimates converge to
+true state values. An internal model of the system, eitherlinear or nonlinear, is used to predict an a priori state
+estimate. A corrective term is then applied to calculate the
+a posteriori state estimate, and the estimation process isrepeated iteratively. The SVSF was later derived from theVSF and uses a simpler and less complex gain calculation
+[36]. In its present form, the SVSF is stable and robust to
+modeling uncertainties and noise, given an upperbound onuncertainties [ 36]. The basic concept of the SVSF is shown in
+Figure 2 . Assume that the solid line in Figure 2 is a trajectory
+of some state (amplitude versus time). An initial value is
+selected for the state estimate. The estimated state is pushedtowards the true value until it reaches a subspace around the
+150
+100
+50
+0
+−50
+−100
+150 100 50 0 −50 −100x2
+x15-point QKF covariance
+EKF covariance3-point QKF covariance
+True covariance
+3-point QKF mean: +
+5-point QKF mean: oEKF mean:×
+True mean:∗
+Figure 1: PDF of a Nonlinearly transformed gaussian random
+variable [ 33].Amplitude
+Initial value of the
+estimated statesExistence
+subspaceEstimated state
+trajectorySystem
+state trajector y
+Time
+Figure 2: SVSF estimation concept [ 36].
+actual state trajectory, referred to as the existence subspace.
+Once the value enters the existence subspace, the estimated
+state is forced to remain within it and into switching along
+the system state trajectory [ 36].
+The SVSF method is model based and applies to smooth
+nonlinear dynamic equations. The estimation process maybe summarized by ( 11)t o( 16) and is repeated iteratively.
+An a priori state estimate is calculated using an estimated
+model of the system. This value is then used to calculatean a priori estimate of the measurement deﬁned by ( 12). A
+corrective term, referred to as the SVSF gain, is calculated as
+a function of the error in the predicted output, as well as a
+gain matrix and the smoothing boundary layer width. The
+4 ISRN Signal Processing
+corrective term calculated in ( 13)i st h e nu s e di n( 14)t oﬁ n d
+the a posteriori state estimate
+ˆxk+1|k=ˆF(
+ˆxk|k,uk), (11)
+ˆzk+1|k=ˆCˆxk+1|k, (12)
+Kk+1=ˆC−1⏐⏐⏐(⏐⏐⏐
+ezk+1|k⏐⏐⏐
+ABS+γ⏐⏐⏐ezk|k⏐⏐⏐
+ABS)⏐⏐⏐
+ABS
+◦sat(
+ezk+1|k,Ψ)
+,(13)
+ˆxk+1|k+1=ˆxk+1|k+Kk+1, (14)
+ezk|k=zk−ˆzk|k, (15)
+ezk+1|k=zk+1−ˆzk+1|k. (16)
+T wo critical variables in this process are the a priori and
+a posteriori output error estimates, deﬁned by ( 15)a n d( 16),
+respectively [ 36]. Note that ( 15)i st h eo u t p u te r r o re s t i m a t e
+from the previous time step and is used only in the gain
+calculation.
+3. Condition Monitoring of a Battery System in
+a Hybrid Electric V ehicle
+A variety of batteries have been studied in literature, most
+notably lead-acid and lithium-ion batteries [ 13,15,19,20,
+37]. Lead-acid batteries are the oldest type of rechargeable
+batteries, and are most commonly found in motor vehicles.
+Lithium-ion batteries are also a form of rechargeable battery,
+which contain lithium in its positive electrode (cathode).These batteries are usually found in portable consumerelectronics (i.e., laptops or notebooks) due to particularly
+high energy-to-weight ratios, slow self-discharge, and a lack
+of memory e ﬀect (i.e., where a battery loses its maximum
+energy capacity over time) [ 16]. In recent years, lithium-
+ion batteries have slowly entered the hybrid electric vehicle
+market, due to the fact that they o ﬀer better energy density
+compared to standard batteries [ 38].
+The operation of batteries may be studied by using the
+advanced vehicle simulator (ADVISOR), which was written
+in MATLAB and Simulink by the US Department of Energyand the National Renewable Energy Laboratory [ 39–41].
+ADVISOR is used for the analysis of performance and fuel
+economy of three vehicle types: conventional, electric, and
+hybrid vehicles [ 39]. In 2001, the resistanc e-capacitance (RC)
+battery model was ﬁrst implemented in ADVISOR [ 42]. The
+electrical model consists of three resistors ( R
+e,Rc,a n dRt)
+and two capacitors ( CbandCc). The ﬁrst capacitor ( Cb)
+represents the capability of the battery to chemically store acharge, and the second capacitor ( C
+c) represents the surface
+eﬀects of a cell [ 41]. The resistances and capacitances vary
+with changing SOC and temperature ( T)[41]. ADVISOR
+oﬀers two di ﬀerent datasets for the RC battery model:
+lithium-ion and nickel-metal hydride chemistries. For the
+purposes of this study, the lithium-ion chemistry was used in
+conjunction with the RC battery model. Figure 3 illustrates
+the equivalent circuit diagram of the RC model.Rt
+RcIcIb
+Cb,VCb VoIs Re
+Cc,VCc
+Figure 3: RC battery circuit diagram.
+A standard model of a parallel hybrid electric vehicle
+referred to within ADVISOR as the Annex VII PHEV
+was used for this study. This model has been developedby the International Energy Agency (IEA), which is aninternational research community for the development and
+commercialization of hybrid and electric vehicles [ 43]. The
+model is based on data obtained from published sources andnational (U.S.) research test data [ 39]. The battery system
+of the HEV represents the battery pack which stores energy
+on board the HEV . The system accepts a power request andreturns the available power from the battery, as well as theSOC, voltage and current [ 39].
+The nonlinear equations that describe the system may be
+derived from the RC battery model of Figure 3 ,a ss h o w n
+inAppendix C . For the purposes of condition monitoring
+of the battery, two voltages V
+CbandVCcas well as two
+capacitance parameters CbandCcneed to be estimated.
+Should a fault exist in either of the battery capacitors, onewould be able to determine this given the corresponding
+change in the parametric value. Further to the equations
+found in Appendix C , a discrete-time state space model of
+the Capacitor voltages may be deﬁned as follows:
+⎡
+⎣VCbk+1
+VCck+1⎤
+⎦
+=⎡
+⎢⎢⎢⎣−Ts
+Cb(Re+Rc)+1Ts
+Cb(Re+Rc)
+Ts
+Cc(Re+Rc)−Ts
+Cc(Re+Rc)+1⎤
+⎥⎥⎥⎦
+k⎡
+⎣VCbk
+VCck⎤⎦
++⎡
+⎢⎢⎢⎣TsRc
+Cb(Re+Rc)
+TsRe
+Cc(Re+Rc)⎤
+⎥⎥⎥⎦
+kISk.
+(17)
+For parameter estimation, ( 17) is used to formulate a
+state vector that would include parameters such that
+x=[VCbVCcCbCc]T. (18)
+ISRN Signal Processing 5
+0 5 10 15 20 25 30 35 40 4500.511.522.533.5
+Time (s)Current input (A)Simulation input values
+Figure 4: Supplied current input.
+By rearranging ( 17), and further to Appendix C ,t h e
+general model used for state and parameter estimation isobtained as
+x
+k+1=f(xk,uk)+wk,
+zk+1=h(xk+1,uk+1)+vk+1.(19)
+T o implement the EKF method, the nonlinear system had
+to be linearized using a ﬁrst-order T aylor series approxima-tion. The linearized form of the system equation is provided
+inAppendix D .
+4. Estimation Results
+This paper presents a comparative performance for the appli-
+cation of the extended Kalman ﬁlter, the particle ﬁlter, the
+quadrature Kalman ﬁlter, and the smooth variable structureﬁlter for condition monitoring of RC batteries. The study isconducted by simulation using the ADVISOR battery model.
+The model parameters are documented in [ 39].
+Figures 4and 5illustrate the input current ( I
+s)a n dt h e
+output voltages VCbandVCcused in the simulation. The pa-
+rameter values CbandCcare made to vary in order to simu-
+late fault conditions as shown in Figures 6and 7. Parameters
+CbandCcas well as the states VCbandVCcare estimated
+using the four methods described in Section 2 .
+A comparison and discussion of the results is provided
+using two simulated cases: one with noise and one with noiseas well as modeling errors. Note that the sampling time usedin the simulation was 0.01 seconds.
+4.1. Extended Kalman Filter Results. For linear dynamic
+systems in the presence of Gaussian white noise, the KF
+provides an elegant and statistically optimal solution by
+minimizing the mean-squared estimation error. The EKFis used for nonlinear problems. The following covariance0 5 10 15 20 25 30 35 40 4500.10.20.30.40.50.60.70.80.91
+Time (s)Voltages (V)Capacitance voltages
+VCb
+VCc
+Figure 5: Capacitance voltages.
+0 5 10 15 20 25 30 35 40 452.833.23.43.63.844.24.44.64.8×104
+Time (s)CbvaluesCbsimulation values
+Figure 6:Cbsimulation values.
+matrices (error, process, and measurement, resp.) were used
+for the EKF and were obtained by trial-and-error:
+P=⎡
+⎢⎢⎢⎢⎢⎢⎣13 0 3 0 3 0
+30 1 30 3030 30 1 3030 30 30 1⎤
+⎥⎥⎥⎥⎥⎥⎦,
+Q=R=⎡
+⎢⎢⎢⎢⎢⎢⎣1000
+01000010
+0001⎤
+⎥⎥⎥⎥⎥⎥⎦.(20)
+6 ISRN Signal Processing
+0 5 10 15 20 25 30 35 40 4520003000400050006000700080009000
+Time (s)CcvaluesCcsimulation values
+Figure 7:Ccsimulation values.
+The EKF worked very well in the absence of modeling
+errors, as shown in Figure 8 . Its performance degraded con-
+siderably when modeling errors were added, as illustrated in
+Figure 9 .
+As shown in Figure 10 ,t h eE K Fw a sv e r ys e n s i t i v et o
+the selection of the initial conditions; however, it often
+recovered and performed very well. This is important to
+note because without selecting good starting points, the ﬁlterperformed the worst. However, when good initial conditions
+were selected, the EKF yields the best results (based on RMSE
+and the assumption that there were no uncertainties in themodel). When uncertainties (besides white measurementand process noise) were present in the ﬁlter model, in this
+example, the EKF became unstable (as shown in Figure 9 )
+and failed to yield reasonable results. The simulation timefor the EKF was one of the fastest, and compared to the othermethods, it was computationally easy.
+4.2. Particle Filter Results. For the PF method, a large number
+of particles (500) were used. Its application results are shown
+in Figures 11and 12.T h eP Fw a sa b l et oe s t i m a t ef a i r l yw e l li n
+the presence of noise. However, when modeling uncertaintieswere introduced, the PF had di ﬃculty tracking the true
+voltages. As shown in Figure 12(b) , after about 20 seconds,
+the PF was able to recover and provide a good estimate.
+The PF provided satisfactory results. However, the tech-
+nique had the highest RMSE (for the ﬁrst case). That being
+said, when compared to the EKF, no Jacobian matrix had
+to be calculated to linearize the system matrix, as weightedparticles were used instead. This may be an attractive featureif the system is too di ﬃcult to linearize. A large number
+of particles (which were required to accurately estimate the
+PDF), and the resampling feature of the PF, contributedto a slower computational time. When uncertainties werea d d e dt ot h eﬁ l t e rm o d e l( a ss h o w ni n Figure 12 ), the PF was
+able to recover slowly from modeling errors and after some
+time, accurately represent the ﬁrst two states. There weresigniﬁcant errors in the third and fourth states; however this,as previously mentioned, may be attributed to measurements
+being only available for the ﬁrst two states.
+4.3. Quadrature Kalman Filter Results. For the QKF, the ini-
+tial values of the covariance matrices were set to the identitymatrix. The following results shown in Figures 13and 14
+were generated using the QKF based on the simulation setup.
+The QKF performed very well for both cases. However, likethe previous methods, when uncertainties were introduced,
+i tw a su n a b l et oa c c u r a t e l yt r a c kt h et w op a r a m e t e r sa s s o c i -
+ated with the battery ( C
+bandCc)a ss h o w ni n Figure 14 .
+The QKF provided good results for the system. Like
+the PF, there was no need to calculate the Jacobian, since
+weighted quadrature points were used instead. One of the
+drawbacks of the QKF is the computational demand whena large number of states and quadrature points are used.This leads to a slower calculation time. For example, since
+four states were required, an array of 81 quadrature points
+was required (3
+4). If a more accurate model was required,
+ﬁve quadrature points per state could be used. However,
+this would further increase the computational time. For this
+system, it was found that increasing the number of quadrat-ure points had a negligible e ﬀect on the accuracy. Note that
+when uncertainties were added to the ﬁlter model, the QKF
+worked extremely well. However, the slow computation time
+is its main hindrance.
+4.4. Smooth Variable Structure Filter Results. The constant
+diagonal matrix ( γ) was set to 0.4, and the smoothing bound-
+ary layer thicknesses ( ψ) were, respectively, set to 1
+×10−3
+and 1×10−2for the two states and the two parameters,
+respectively. The results are shown in Figures 15and 16,
+and were generated using the SVSF based on the simulation
+setup. The SVSF method is very robust to noise and modelinguncertainties, as demonstrated by the accurate estimation inboth cases.
+The SVSF yielded very good results for condition mon-
+itoring of the battery system. Similar to the previous twomethods, it did not require calculation of the Jacobian ma-
+trix, and also required a time delay (signal extraction for the
+last two states). The SVSF simulation time was just as fast asthe EKF, and the results were similar for the case with noise.When errors were added to the ﬁlter model, the SVSF worked
+the best (in terms of RMSE). Although there were still large
+estimation errors for the third and fourth states, they wereﬁnite and stable. It is important to note that the SVSF wasrobust and not sensitive to changes in the ﬁlter parameters
+and the initial conditions.
+4.5. Summary of Results. The results of the simulations were
+compared based on estimation error, robustness, sensitivity
+to noise, and computational di ﬃculty and time. As shown
+inTa b l e 1 , the EKF performed best in terms of estimation
+error, in the case of only noise (referred to as Case (1)).In the presence of modeling uncertainties (Case (2)), the
+EKF’s performance severely degraded. The SVSF yielded the
+most accurate estimation for the case involving modelinguncertainties. Both the PF and QKF performed moderately
+ISRN Signal Processing 7
+0 5 10 15 20 25 30 35 40 45−8000−6000−4000−2000020004000
+Time (s)ErrorError over time
+Cb
+CcVCb
+VCc
+(a) Estimation error over time0 5 10 15 20 25 30 35 40 4500.10.20.30.40.50.60.70.80.91
+Time (s)Voltages (V)Capacitor voltages
+VCbestimate
+VCcestimateVCbactual
+VCcactual
+(b) Capacitor voltages
+0 5 10 15 20 25 30 35 40 450123456×104
+Time (s)CbvalueCbsimulation values
+Cbestimate
+Cbactual
+(c)Cbsimulation values
+CcvalueCcsimulation values
+Ccestimate
+Ccactual0 5 10 15 20 25 30 35 40 450100020003000400050006000700080009000
+Time (s)(d)Ccsimulation values
+Figure 8: Extended Kalman ﬁlter simulation results (only noise).
+well, but at a cost of computational time, as shown in the last
+row of Ta b l e 1 .
+The error in Ta b l e 1 refers to the root mean-squared error
+(RMSE), calculated as follows:
+RMSE=1
+N√
+N∑
+i=1(xi−ˆxi)2. (21)
+Ta b l e 2 gives a quantitative comparison of the four ﬁlters.
+The robustness was based on observations made on varying
+the noise levels and considering its impact on model errors.The sensitivities were determined by tuning the ﬁlters variousparameters. Computation (simulation) time was determined
+for each method and may be compared on a relative basis.
+5. Conclusions
+This paper discussed the application of condition monitoring
+to an RC battery system, typically found within a hybrid
+electric vehicle. State and para meter estimation techniques
+are important as they are responsible for providing accurateestimates of the states when reliable measurements are
+unavailable, and hence ensure successful condition mon-
+itoring. A comparative study was presented in which theKalman and the extended Kalman ﬁlters (KF/EKF), the
+8 ISRN Signal Processing
+Cb
+Cc0 5 10 15 20 25 30 35 40 45−1012345
+Time (s)ErrorError over time×104
+VCb
+VCc
+(a) Estimation error over time0 5 10 15 20 25 30 35 40 45−2−1.5−1−0.500.511.52
+Time (s)Voltages (V)Capacitor voltages
+VCbestimate
+VCcestimateVCbactual
+VCcactual
+(b) Capacitor voltages
+0 5 10 15 20 25 30 35 40 450123456
+Time (s)CbvalueCbsimulation values
+Cbestimate
+Cbactual×104
+(c)Cbsimulation values0 5 10 15 20 25 30 35 40 450100020003000400050006000700080009000
+Time (s)CcvalueCcsimulation values
+Ccestimate
+Ccactual
+(d)Ccsimulation values
+Figure 9: Extended Kalman ﬁlter simulation results (including errors).
+Table 1: Quantitative summary of results.
+EKF PF QKF SVSF
+States and parameters Case (1) Case (2) Case (1) Case (2) Case (1) Case (2) Case (1) Case (2)
+RMSEVCb 2.25E−09 5.61E−01 2.34E−04 9.50E−03 2.07E−05 4.19E−05 2.82E−07 1.24E−08
+VCc 1.10E−08 9.23E−02 2.95E−04 1.30E−03 2.07E−05 4.19E−05 6.58E−07 9.62E−09
+Cb 12.02 597 41.19 1196 28.07 1196 18.48 1195
+Cc 1.40 89 2.19 177 1.20 177 0.73 177
+Simulation time (sec) 0.38 0.44 3.27 3.34 8.35 8.42 0.39 0.39
+
+ISRN Signal Processing 9
+0 0.05 0.1 0.15 0.2 0.25 0.3 0.35 0.4 0.4500.511.522.533.544.5
+Time (s)CbvalueCbsimulation values
+Cbestimate
+Cbactual×104
+(a)Cbsimulation values0 0.05 0.1 0.15 0.2 0.25 0.3 0.35 0.4 0.45−1000010002000300040005000
+Time (s)CcvalueCcsimulation values
+Ccestimate
+Ccactual
+(b)Ccsimulation values
+Figure 10: EKF Simulation results with poor initial conditions (only noise).
+Table 2: Qualitative comparison of the ﬁlters.
+Characteristic EKF PF QKF SVSF
+Robustness Little Medium Good Good
+Sensitivity to
+UncertaintiesHigh High Low Low
+Sensitivity to Filter
+ParametersHigh Low Low Low
+Computation Time Fast Slow V ery Slow Fast
+Table 3: Ranking of the state estimation techniques.
+RankingCase (1): Case (2):
+Only noise Noise and model errors
+1 EKF SVSF
+2S V S F Q K F
+3Q K F P F
+4P F E K F
+particle ﬁlter (PF), the quadrature Kalman ﬁlter (QKF), and
+the smooth variable structure ﬁlter (SVSF) were appliedfor condition monitoring. These estimation methods werecompared based on estimation error, robustness, sensitivity
+to noise, and computation time. Ta b l e 3 summarizes the
+results of the comparison. For the case without modelingerrors, the EKF worked the best in terms of RMSE andcomputational speed. When modeling errors were present,
+which is common in physical applications, the SVSF was
+shown to work signiﬁcantly better than the other methodsin terms of stability and RMSE.Appendices
+A. List of Nomenclature
+A:S y s t e mm a t r i x
+B: Input matrix
+C: Output matrix
+e: State estimation error
+f: Nonlinear system or process equation
+h: Nonlinear measurement or output equation
+k:T i m es t e pi n d e x
+K: Gain value (KF, QKF, or SVSF)
+m:N u m b e ro fm e a s u r e m e n t s
+n:N u m b e ro fs t a t e s
+Neﬀ:Eﬀective number of particles
+P: Error covariance matrix
+Q: System noise covariance matrix
+R: Measurement noise covariance matrix
+Sat: Saturation function
+t: Simulation time
+Ts: Sampling time
+u: Input
+v: Measurement noise
+w:S y s t e mn o i s e
+wl: Quadrature point weight
+10 ISRN Signal Processing
+×104
+0 5 10 15 20 25 30 35 40 45−1.5−1−0.500.511.522.53
+Time (s)ErrorE r r o ro v e rt i m e
+Cb
+CcVCb
+VCc
+(a) Estimation error over time0 5 10 15 20 25 30 35 40 4500.10.20.30.40.50.60.70.80.91
+Time (s)Voltages (V)Capacitor voltages
+VCbestimate
+VCcestimateVCbactual
+VCcactual
+(b) Capacitor voltages
+0 5 10 15 20 25 30 35 40 4501234567×104
+Time (s)CbvalueCbsimulation values
+Cbestimate
+Cbactual
+(c)Cbsimulation values0 5 10 15 20 25 30 35 40 450100020003000400050006000700080009000
+Time (s)CcvalueCcsimulation values
+Ccestimate
+Ccactual
+(d)Ccsimulation values
+Figure 11: Particle ﬁlter simulation results (only noise).
+x: System states
+y: Observed measurement or output
+z: Measurement output
+γ: Constant diagonal gain matrix with elements having
+values between 0 and 1
+ω:P a r t i c l ew e i g h t
+Ψ: Smoothing boundary layer
+π: Probability distribution
+τ: Sampling time
+ˆ: Denotes an estimated value∼: Denotes an error value
+·: On top of a parameter denotes a time derivative.
+Furthermore, note that subscript k+1|krefers to an a
+priori time step and that the subscript k+1|k+1r e f e r sa n
+a posteriori time step. A superscript of Tdenotes a matrix
+transpose.
+B. Quadrature Kalman Filter Algorithm
+The following is a summary of the QKF algorithm, directlyas presented in [ 33,34]. This process was used to obtain the
+ISRN Signal Processing 11
+0 5 10 15 20 25 30 35 40 45−2024681012×104
+Time (s)ErrorError over time
+Cb
+CcVCb
+VCc
+(a) Estimation error over time0 5 10 15 20 25 30 35 40 45−1−0.8−0.6−0.4−0.200.20.40.60.81
+Time (s)Voltages (V)Capacitor voltages
+VCbestimate
+VCcestimateVCbactual
+VCcactual
+(b) Capacitor voltages
+0 5 10 15 20 25 30 35 40 45−6−4−20246×104
+Time (s)CbvalueCbsimulation values
+Cbestimate
+Cbactual
+(c)Cbsimulation values0 5 10 15 20 25 30 35 40 45−1−0.8−0.6−0.4−0.200.20.40.60.81×104
+Time (s)CcvalueCcsimulation values
+Ccestimate
+Ccactual
+(d)Ccsimulation values
+Figure 12: Particle ﬁlter simulation results (including errors).
+presented results. There are two updates at each step: the time
+update and the measurement update.
+Time Update Step.
+(1) Assuming at time kthe posterior density function
+p(xk−1|zk−1)=N(ˆxk−1|k−1,Pk−1|k−1)i sk n o w n ,t h e n
+we may factorize as follows:
+Pk−1|k−1=√
+Pk−1|k−1(√
+Pk−1|k−1)T
+. (B.1)(2) Evaluate the quadrature points {Xl,k−1|k−1}m
+l=1as
+Xl,k−1|k−1=√
+Pk−1|k−1ξl+ˆxk−1|k−1. (B.2)
+(3) Evaluate the propagated quadrature points {X∗
+l,k|k−1}m
+l=1
+as:
+X∗
+l,k|k−1=f(Xl,k−1|k−1,uk−1,k−1). (B.3)
+12 ISRN Signal Processing
+0 5 10 15 20 25 30 35 40 45−1−0.500.511.5×104
+Time (s)ErrorError over time
+Cb
+CcVCb
+VCc
+(a) Estimation error over time0 5 10 15 20 25 30 35 40 4500.10.20.30.40.50.60.70.80.91
+Time (s)Voltages (V)Capacitor voltages
+VCbestimate
+VCcestimateVCbactual
+VCcactual
+(b) Capacitor voltages
+0 5 10 15 20 25 30 35 40 4501234567×104
+Time (s)CbvalueCbsimulation values
+Cbestimate
+Cbactual
+(c)Cbsimulation values0 5 10 15 20 25 30 35 40 450100020003000400050006000700080009000
+Time (s)CcvalueCcsimulation values
+Ccestimate
+Ccactual
+(d)Ccsimulation values
+Figure 13: Quadrature Kalman ﬁlter simulation results (only noise).
+(4) Estimate the predicted state:
+ˆxk|k−1=m∑
+l=1wlX∗
+l,k|k−1. (B.4)
+(5) Estimate the predicted error covariance:
+Pk|k−1=m∑
+l=1wlX∗
+l,k|k−1X∗T
+l,k|k−1−ˆxk|k−1ˆxT
+k|k−1+Qk. (B.5)Measurement Update Step.
+(1) Factorize:
+Pk−1|k−1=√
+Pk−1|k−1(√
+Pk−1|k−1)T
+. (B.6)
+(2) Evaluate the quadrature points {Xl,k−1|k−1}m
+l=1as:
+Xl,k−1|k−1=√
+Pk−1|k−1ξl+ˆxk−1|k−1. (B.7)
+ISRN Signal Processing 13
+0 5 10 15 20 25 30 35 40 45−2024681012×104
+Time (s)ErrorE r r o ro v e rt i m e
+Cb
+CcVCb
+VCc
+(a) Estimation error over time00.10.20.30.40.50.60.70.80.91Voltages (V)Capacitor voltages
+0 5 10 15 20 25 30 35 40 45
+Time (s)
+VCbestimate
+VCcestimateVCbactual
+VCcactual
+(b) Capacitor voltages
+−6−4−20246×104CbvalueCbsimulation values
+Cbestimate
+Cbactual0 5 10 15 20 25 30 35 40 45
+Time (s)
+(c)CbSimulation values0 5 1 01 52 02 53 03 54 04 5
+Time (s)−1−0.8−0.6−0.4−0.200.20.40.60.81×104CcvalueCcsimulation values
+Ccestimate
+Ccactual
+(d)CcSimulation values
+Figure 14: Quadrature Kalman ﬁlter simulation results (including errors).
+(3) Evaluate the propagated quadrature points {Zl,k|k−1}m
+l=1
+as:
+Zl,k|k−1=h(Xl,k|k−1,uk,k). (B.8)
+(4) Estimate the predicted measurement:
+ˆzk|k−1=m∑
+l=1wlZl,k|k−1. (B.9)(5) Estimate the innovation covariance matrix
+Pzz,k|k−1=Rk+m∑
+l=1wlZl,k|k−1ZT
+l,k|k−1−ˆzk|k−1ˆzT
+k|k−1.
+(B.10)
+(6) Estimate the cross covariance matrix
+Pxz,k|k−1=m∑
+l=1wlXl,k|k−1ZT
+l,k|k−1−ˆxk|k−1ˆzT
+k|k−1. (B.11)
+14 ISRN Signal Processing
+0 5 10 15 20 25 30 35 40 45−8000−6000−4000−2000020004000600080001000012000
+Time (s)ErrorError over time
+Cb
+CcVCb
+VCc
+(a) Estimation error over time0 5 10 15 20 25 30 35 40 45
+Time (s)00.10.20.30.40.50.60.70.80.91Voltages (V)Capacitor voltages
+VCbestimate
+VCcestimateVCbactual
+VCcactual
+(b) Capacitor voltages
+0 5 10 15 20 25 30 35 40 45
+Time (s)0123456×104CbvalueCbsimulation values
+Cbestimate
+Cbactual
+(c)CbSimulation values0 5 10 15 20 25 30 35 40 45
+Time (s)0100020003000400050006000700080009000CcvalueCcsimulation values
+Ccestimate
+Ccactual
+(d)CcSimulation values
+Figure 15: Smooth variable structure ﬁlter simulation results (only noise).
+(7) Estimate the Kalman gain:
+Wk=Pxz,k|k−1P−1
+zz,k|k−1. (B.12)
+(8) Estimate the updated step:
+ˆxk|k=ˆxk|k−1+Wk(zk−ˆzk|k−1). (B.13)
+(9) Estimate the corresponding error covariance:
+Pk|k=Pk|k−1−WkPzz,k|k−1WT
+k. (B.14)C. Derivation of the RC Battery
+Model Equations
+The output voltage may be calculated by summing the
+voltages of each element in the circuit. Summation of the
+outer loop and inner loop voltages yield two equations forthe output voltage, respectively:
+V
+O=ISRt+IbRe+VCb, (C.1)
+VO=ISRt+IcRc+VCc. (C.2)
+ISRN Signal Processing 15
+0 5 10 15 20 25 30 35 40 45−2024681012×104
+Time (s)ErrorError over time
+Cb
+CcVCb
+VCc
+(a) Estimation error over time0 5 10 15 20 25 30 35 40 45
+Time (s)00.10.20.30.40.50.60.70.80.91Voltages (V)Capacitor voltages
+VCbestimate
+VCcestimateVCbactual
+VCcactual
+(b) Capacitor voltages
+0 5 1 01 52 02 53 03 54 04 5
+Time (s)−6−4−20246×104CbvalueCbsimulation values
+Cbestimate
+Cbactual
+(c)CbSimulation values0 5 1 01 52 02 53 03 54 04 5
+Time (s)−1−0.8−0.6−0.4−0.200.20.40.60.81CcvalueCcsimulation values
+Ccestimate
+Ccactual×104
+(d)CcSimulation values
+Figure 16: Smooth variable structure ﬁlter simulation results (including errors).
+Recall Kirchho ﬀ’s current law, which states that the total
+current entering a node must equal the total current leaving,
+such that the supply current is deﬁned by
+IS=Ib+Ic. (C.3)
+Rearranging for Icin (C.3) and substituting into ( C.2)y i e l d s
+VO=ISRt+(IS−Ib)Rc+VCc. (C.4)
+Equating ( C.4) with the ﬁrst output voltage ( C.1)a n ds o l v i n g
+forIbyields
+Ib=ISRc
+Re+Rc+VCc
+Re+Rc−VCb
+Re+Rc. (C.5)Note that ˙VCb=Ib/Cbsuch that ( C.5) becomes
+˙VCb=ISRc
+Cb(Re+Rc)+VCc
+Cb(Re+Rc)−VCb
+Cb(Re+Rc).(C.6)
+Similarly, the above approach may be used to solve for the
+second capacitor voltage rate of change:
+˙VCc=ISRe
+Cc(Re+Rc)+VCb
+Cc(Re+Rc)−VCc
+Cc(Re+Rc).(C.7)
+16 ISRN Signal Processing
+The output voltage may be solved by manipulating ( C.1)
+through ( C.3). Setting Ic=IS−Ibin (C.2), and rearranging
+forIb, results in the following:
+Ib=Rt+Rc
+RcIS+VCc
+Rc−VO
+Rc. (C.8)
+Rearranging ( C.1)f o rIb, and setting the result equal to ( C.8)
+yields
+VO
+Re−VCb
+Re−Rt
+ReIS=Rt+Rc
+RcIS+VCc
+Rc−VO
+Rc. (C.9)
+Manipulating ( C.9) and simplifying for the output voltage
+results in
+VO=Rc
+Re+RcVCb+Re
+Re+RcVCc+[
+Rt+ReRc
+Re+Rc]
+IS.
+(C.10)
+D. Linearization of the Battery System
+The battery model described in Section 3 requires lineariza-
+tion for the EKF to be implemented. The linearization wasbased on the Jacobian matrix and the four states (where forneatness, W
+Cb=1/CbandWCc=1/Cc)
+φk=⎡
+⎢⎢⎢⎢⎢⎢⎢⎢⎢⎢⎢⎢⎢⎣∂f1
+∂VCb∂f1
+∂VCc∂f1
+∂WCb∂f1
+∂WCc
+∂f2
+∂VCb∂f2
+∂VCc∂f2
+∂WCb∂f2
+∂WCc
+∂f3
+∂VCb∂f3
+∂VCc∂f3
+∂WCb∂f3
+∂WCc
+∂f4
+∂VCb∂f4
+∂VCc∂f4
+∂WCb∂f4
+∂WCc⎤
+⎥⎥⎥⎥⎥⎥⎥⎥⎥⎥⎥⎥⎥⎦
+k,( D . 1 )
+where the functions in ( D.1)a r ed e s c r i b e db y
+f1=−TSVCbWCb
+Re+Rc+VCb
++TSVCcWCb
+Re+Rc+TSRcWCb
+Re+RcIS,
+f2=−TSVCbWCc
+Re+Rc−TSVCcWCb
+Re+Rc
++VCc+TSReWCc
+Re+RcIS,
+f3=WCb,
+f4=WCc.(D.2)
+The linearized form ( φ) of the system matrix, using the
+state vector described by ( 18), is as follows:
+φk=⎡
+⎢⎢⎢⎢⎢⎢⎣φ11φ12φ13 0
+φ21φ22 0φ24
+0010
+0001⎤
+⎥⎥⎥⎥⎥⎥⎦
+k, (D.3)where the elements are described by:
+φ11=−TSWCbk
+Rek+Rck+1 ,
+φ12=TSWCbk
+Rek+Rck,
+φ13=TS
+Rek+Rck(−VCbk+VCck+RckISk),
+φ21=TSWCck
+Rek+Rck,
+φ22=−TSWCck
+Rek+Rck+1 ,
+φ24=TS
+Rek+Rck(VCbk−VCck+RekISk).(D.4)
+References
+[1] T . L. Churchill, “Battery condition management: an important
+way to protect a critical asset, ” IEEE Aerospace and Electronic
+Systems Magazine , vol. 15, no. 7, pp. 41–47, 2000.
+[2] F. V . Conte, “Battery and battery management for hybrid elec-
+tric vehicles: a review, ” Elektrotechnik und Informationstechnik ,
+vol. 123, no. 10, pp. 424–431, 2006.
+[3] I. S. Kim, “Nonlinear state of charge estimator for hybrid elec-
+tric vehicle battery, ” IEEE Transactions on Power Electronics ,
+vol. 23, no. 4, pp. 2027–2034, 2008.
+[4] A. Piccolo, A. Vaccaro, and D. Villacci, “Fuzzy logic based
+optimal power ﬂow management in parallel hybrid electric
+vehicles,” Iranian Journal of Electrical and Computer Engineer-
+ing, vol. 4, no. 2, p. 83, 2005.
+[ 5 ]X .L i ,J .L i ,L .X u ,a n dM .O u y a n g ,“ P o w e rm a n a g e m e n t
+and economic estimation of fuel cell hybrid vehicle usingfuzzy logic, ” in Proceedings of the 5th IEEE V ehicle Power and
+Propulsion Conference (VPPC ’09) , pp. 1749–1754, September
+2009.
+[6] P . Naderi, M. Mirsalim, M. T. Bathaee, and R. Chini, “Fuzzy
+controller design for parallel hybrid vehicle analysis usingforward simulation, ” in Proceedings of the 5th IEEE Vehicle
+Power and Propulsion Conference (VPPC ’09) , pp. 234–241,
+September 2009.
+[7] M. Montazeri-Gh, A. Poursamad, and B. Ghalichi, “ Applica-
+tion of genetic algorithm for optimization of control strategyin parallel hybrid electric vehicles, ” Journal of the Franklin
+Institute , vol. 343, no. 4-5, pp. 420–435, 2006.
+[8] L. V . P ´e r e z ,G .R .B o s s i o ,D .M o i t r e ,a n dG .O .G a r c ´ıa, “Opti-
+mization of power management in an hybrid electric vehicleusing dynamic programming, ” Mathematics and Computers in
+Simulation , vol. 73, no. 1–4, pp. 244–254, 2006.
+[9] B. Sampathnarayanan, L. Serrao, S. Onori, G. Rizzoni, and S.
+Yurkovich, “Model predictive control as an energy manage-
+ment strategy for hybrid electric vehicles, ” in Proceedings of the
+ASME Dynamic Systems and Control Conference (DSCC ’09) ,
+pp. 1161–1168, October 2009.
+[ 1 0 ] D .F .O p i l a ,X .W a n g ,R .M c G e e ,J .A .C o o k ,a n dJ .W .G r i z z l e ,
+“Fundamental structural limitations of an industrial energymanagement controller architecture for hybrid vehicles, ” in
+Proceedings of the ASME Dynamic Systems and Control Con-
+ference (DSCC ’09) , pp. 213–221, October 2009.
+ISRN Signal Processing 17
+[11] K. D. Huang, S. C. Tzeng, T. M. Jeng, and C. C. Chen, “Integra-
+tion mechanism for a parallel hybrid vehicle system, ” Applied
+Energy , vol. 82, no. 2, pp. 133–147, 2005.
+[12] F . Codec `a, S. M. Savaresi, and V . Manzoni, “The mix estima-
+tion algorithm for battery state-of-charge estimator-analysisof the sensitivity to model errors, ” in Proceedings of the ASME
+Dynamic Systems and Control Conference (DSCC ’09) , pp. 97–
+104, October 2009.
+[ 1 3 ]B .S .B h a n g u ,P .B e n t l e y ,D .A .S t o n e ,a n dC .M .B i n g h a m ,
+“Nonlinear observers for predicting state-of-charge and state-
+of-health of lead-acid batteries for hybrid-electric vehicles, ”IEEE Transactions on V ehicular Technology ,v o l .5 4 ,n o .3 ,p p .
+783–794, 2005.
+[14] V . Marano, S. Onori, Y . Guezennec, G. Rizzoni, and N.
+Madella, “Lithium-ion batteries life estimation for plug-inhybrid electric vehicles, ” in Proceedings of the 5th IEEE Vehicle
+Power and Propulsion Conference (VPPC ’09) , pp. 536–543,
+September 2009.
+[15] G. L. Plett, “Extended Kalman ﬁltering for battery man-
+agement systems of LiPB-based HEV battery packs—part 1.
+Background, ” Journal of Power Sources , vol. 134, no. 2, pp. 252–
+261, 2004.
+[16] G. L. Plett, “Extended Kalman ﬁltering for battery man-
+agement systems of LiPB-based HEV battery packs—part 2.Modeling and identiﬁcation, ” Journal of Power Sources ,v o l .
+134, no. 2, pp. 262–276, 2004.
+[17] G. L. Plett, “Extended Kalman ﬁltering for battery manage-
+ment systems of LiPB-based HEV battery packs—part 3. Stateand parameter estimation, ” Journal of Power Sources , vol. 134,
+no. 2, pp. 277–292, 2004.
+[18] A. Vasebi, M. Partovibakhsh, and S. M. T. Bathaee, “ A novel
+combined battery model for state-of-charge estimation in
+lead-acid batteries based on extended Kalman ﬁlter for hybrid
+electric vehicle applications, ” Journal of Power Sources , vol. 174,
+no. 1, pp. 30–40, 2007.
+[ 1 9 ] A .V a s e b i ,S .M .T .B a t h a e e ,a n dM .P a r t o v i b a k h s h ,“ P r e d i c t i n g
+state of charge of lead-acid batteries for hybrid electricvehicles by extended Kalman ﬁlter, ” Energy Conversion and
+Management , vol. 49, no. 1, pp. 75–82, 2008.
+[20] G. L. Plett, “Sigma-point Kalman ﬁltering for battery man-
+agement systems of LiPB-based HEV battery packs—part 1:introduction and state estimation, ” Journal of Power Sources ,
+vol. 161, no. 2, pp. 1356–1368, 2006.
+[21] G. L. Plett, “Sigma-point Kalman ﬁltering for battery man-
+agement systems of LiPB-based HEV battery packs—part
+2: simultaneous state and parameter estimation, ” Journal of
+Power Sources , vol. 161, no. 2, pp. 1369–1384, 2006.
+[22] A. Widodo and B. S. Y ang, “Support vector machine in
+machine condition monitoring and fault diagnosis, ” Mechani-
+cal Systems and Signal Processing , vol. 21, no. 6, pp. 2560–2574,
+2007.
+[23] Y . Bar-Shalom, X. Rong Li, and T . Kirubarajan, Estimation
+with Applications to Tracking and Navigation ,J o h nW i l e ya n d
+Sons, New Y ork, NY , USA, 2001.
+[24] N. Nise, Control Systems Engineering , John Wiley and Sons,
+New Y ork, NY , USA, 4th edition, 2004.
+[25] R. E. Kalman, “ A new approach to linear ﬁltering and predic-
+tion problems, ” Transactions of the ASME Journal of Basic
+Engineering , pp. 35–45, 1960.
+[26] M. S. Grewal and A. P . Andrews, Kalman Filtering: Theory and
+Practice Using MA TLAB , John Wiley and Sons, New Y ork, NY ,
+USA, 3rd edition, 2008.[ 2 7 ]S .H a b i b i ,R .B u r t o n ,a n dY .C h i n n i a h ,“ E s t i m a t i o nu s i n ga
+new variable structure ﬁlter, ” in Proceedings of the American
+Control Conference , pp. 2937–2942, May 2002.
+[28] P . Del Moral, “Measure-valued processes and interacting
+particle systems. Application to nonlinear ﬁltering problems1, ”Annals of Applied Probability , vol. 8, no. 2, pp. 438–495,
+1998.
+[ 2 9 ]N .J .G o r d o n ,D .J .S a l m o n d ,a n dA .F .M .S m i t h ,“ N o v e l
+approach to nonlinear/non-gaussian Bayesian state estima-
+tion, ”
+IEE Proceedings. Part F , vol. 140, no. 2, pp. 107–113,
+1993.
+[30] J. MacCormick and A. Blake, “Probabilistic exclusion principle
+for tracking multiple objects, ” in Proceedings of the 1999 7th
+IEEE International Conference on Computer Vision (ICCV’99) ,
+pp. 572–578, September 1999.
+[31] K. Kanazawa, D. Koller, and S. J. Russell, “Stochastic sim-
+ulation algorithms for dynamic probabilistic networks, ” inProceedings of the 11th Annual Conference on Uncertainty inArtiﬁcial Intelligence , pp. 346–351, 1995.
+[32] B. Ristic, S. Arulampalam, and N. Gordon, Beyond the Kalman
+Filter: Particle Filters for Tracking Applications ,A r t e c hH o u s e ,
+Boston, Mass, USA, 2004.
+[33] I. Arasaratnam, S. Haykin, and R. J. Elliott, “Discrete-time
+nonlinear ﬁltering algorithms using gauss-hermite quadra-
+ture, ” Proceedings of the IEEE , vol. 95, no. 5, pp. 953–977, 2007.
+[34] I. Arasaratnam and S. Haykin, “Square-root quadrature
+Kalman ﬁltering,” IEEE Transactions on Signal Processing ,v o l .
+56, no. 6, pp. 2589–2593, 2008.
+[35] S. R. Habibi and R. Burton, “The variable structure ﬁlter, ”
+Journal of Dynamic Systems, Measurement and Control, Trans-actions of the ASME , vol. 125, no. 3, pp. 287–293, 2003.
+[36] S. Habibi, “The smooth variable structure ﬁlter,” Proceedings
+of the IEEE , vol. 95, no. 5, pp. 1026–1059, 2007.
+[37] T . Okoshi, K. Y amada, T . Hirasawa, and A. Emori, “Battery
+condition monitoring (BCM) technologies about lead-acidbatteries,” Journal of Power Sources , vol. 158, no. 2, pp. 874–
+878, 2006.
+[38] J. V oelcker, “Lithium batteries take to the road, ” IEEE Spec-
+trum , vol. 44, no. 9, pp. 26–31, 2007.
+[39] ADVISOR 2004 User’s Guide , Advanced V ehicle Labs, 2004.
+[40] T. Markel, A. Brooker, T. Hendricks et al., “ ADVISOR: a
+systems analysis tool for advanced vehicle modeling, ” Journal
+of Power Sources , vol. 110, no. 2, pp. 255–266, 2002.
+[41] V . H. Johnson, “Battery performance models in ADVISOR, ”
+Journal of Power Sources , vol. 110, no. 1, pp. 321–329, 2002.
+[42] V . H. Johnson, M. Zolot, and A. Pesaran, “Development and
+validation of a temperature-dependent resistance/capacitancebattery model for ADVISOR, ” in Proceedings of the 18th
+Electric Vehicle Symposium , Berlin, Germany, 2001.
+[43] HEV Implementing Agreement , International Energy Agency,
+2008.
+International Journal of
+AerospaceEngineering
+Hindawi Publishing Corporation
+http://www.hindawi.com Volume 2010
+RoboticsJournal of
+Hindawi Publishing Corporation
+http://www.hindawi.com Volume 2014
+Hindawi Publishing Corporation
+http://www.hindawi.com Volume 2014 Active and Passive  
+Electronic Components
+Control Science
+and Engineering
+Journal of
+Hindawi Publishing Corporation
+http://www.hindawi.com Volume 2014
+ International Journal of
+ Rotating
+Machinery
+Hindawi Publishing Corporation
+http://www.hindawi.com Volume 2014
+Hindawi Publishing Corporation 
+http://www.hindawi.com
+ Journal ofEngineering
+Volume 2014Submit your manuscripts at
+http://www.hindawi.com
+VLSI Design
+Hindawi Publishing Corporation
+http://www.hindawi.com Volume 2014
+Hindawi Publishing Corporation
+http://www.hindawi.com Volume 2014Shock and Vibration
+Hindawi Publishing Corporation
+http://www.hindawi.com Volume 2014Civil EngineeringAdvances in
+Acoustics and VibrationAdvances in
+Hindawi Publishing Corporation
+http://www.hindawi.com Volume 2014
+Hindawi Publishing Corporation
+http://www.hindawi.com Volume 2014Electrical and Computer 
+EngineeringJournal of
+Advances in
+OptoElectronics
+Hindawi Publishing Corporation 
+http://www.hindawi.comVolume 2014
+The Scientific  
+World Journal
+Hindawi Publishing Corporation 
+http://www.hindawi.com Volume 2014
+SensorsJournal of
+Hindawi Publishing Corporation
+http://www.hindawi.com Volume 2014
+Modelling & 
+Simulation in Engineering
+Hindawi Publishing Corporation 
+http://www.hindawi.com Volume 2014
+Hindawi Publishing Corporation
+http://www.hindawi.com Volume 2014Chemical EngineeringInternational Journal of
+ Antennas and
+PropagationInternational Journal of
+Hindawi Publishing Corporation
+http://www.hindawi.com Volume 2014
+Hindawi Publishing Corporation
+http://www.hindawi.com Volume 2014Navigation and  
+ ObservationInternational Journal of
+Hindawi Publishing Corporation
+http://www.hindawi.com Volume 2014Distributed
+Sensor NetworksInternational Journal of

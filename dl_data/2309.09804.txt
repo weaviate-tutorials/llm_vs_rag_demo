@@ -1,0 +1,1407 @@
+
+Energy Management of Hydrogen Hybrid Electric Vehicles - A Potential Study
+David Theodor Machaceka, Nazim Ozan Yazara, Thomas Huberb, Christopher Harald Ondera
+aInstitute for Dynamic Systems and Control, Sonneggstrasse 3, Z ¨urich, 8092, Switzerland
+bRobert Bosch GmbH, Stuttgard, 70442, Germany
+Abstract
+The hydrogen combustion engine (H 2ICE) is known to be able to burn H 2under ultra-lean conditions, while producing no CO 2
+emissions and extremely low engine-out NOeo
+xemissions. This makes the H 2ICE a promising technology for two reasons: Firstly,
+mid-term goals such as net-zero CO 2emissions of passenger cars in Europe by 2035 can be achieved. Secondly, immediate goals,
+as for instance the upcoming EURO 7 NO xlimitations, can be reached more easily as extremely low engine-out NOeo
+xemissions
+facilitate the reduction of the overall tailpipe NOtp
+xemissions. However, one drawback of the H 2ICE is that for high engine loads,
+ultra-lean combustion is no longer possible, which partly nullifies its advantage over conventional combustion engines. In this
+work, the feasibility of achieving consistent reductions in NOeo
+xemissions through the implementation of electric hybridization
+of an H 2ICE-equipped passenger car (H 2-HEV), combined with a dedicated energy management strategy (EMS) is discussed. In
+particular, the mixed H 2-HEV architecture is investigated and compared to a series H 2-HEV , a parallel H 2-HEV , and a base H 2-
+vehicle, which is only equipped with an H 2ICE. For hybrid vehicles, a low H 2consumption and low NOeo
+xemissions are conflicting
+objectives, the trade-off of which depends on the EMS and can be represented as a Pareto front. The dynamic programming
+algorithm is used to calculate the Pareto-optimal EMS calibrations, to display the H 2-NOeo
+xtrade-off for various different driving
+missions. Overall, through the utilization of a dedicated energy management calibration, the mixed H 2-HEV demonstrates the
+capability to consistently achieve extremely low engine-out NOeo
+xemissions across all investigated driving scenarios. For a broad
+range of driving missions, the mixed H 2-HEV is able to decrease the engine-out NOeo
+xemissions by more than 90%, while, at the
+same time, the H 2consumption is decreased by over 16%, compared to a comparable non-hybridized H 2-vehicle. These significant
+emission reductions are possible without having to modify the exhaust-gas aftertreatment system, or the optimization of any of the
+individual drivetrain components, but solely by setting the EMS calibration accordingly.
+Keywords: Hydrogen internal combustion engine, Hybrid electric vehicles, H 2-NOeo
+xtrade-off, Extremely low NOeo
+x, Energy
+management strategy
+1. Introduction
+A major challenge of today’s society is to decrease the
+world-wide CO 2emissions. In order to support this transition
+to a cleaner and more sustainable energy future, renewable en-
+ergies play a critical role [1]. However, with an increasing share
+of renewable energies, fluctuations in power generation can
+lead to grid instabilities as energy production does not always
+align with the current demand. One possibility to cope with the
+intermittent nature of renewable energies is the use of an energy
+storage system, which is a carrier that can convert the stored
+energy back to electric power at any time. Hydrogen energy
+storage systems are perceived as a relatively inexpensive way
+of storing, transporting, and trading renewable energies [2], [3].
+One major part of the world-wide CO 2emissions stems
+from the transportation sector. As in 2022, it was accountable
+for almost one fourth of the global CO 2emissions [4], a major
+part of the global decarbonization politics includes ever more
+stringent emissions legislations in this sector. In December
+Email address: davidm@ethz.ch (David Theodor Machaceka)2021, the united states environmental protection agency
+released the final rule [5], setting CO 2emissions standards to
+82.5 g/km for passenger cars until 2026. The European Union
+has legally regulated the CO 2emissions of new vehicles to
+95 g/km until 2025, to 60 g/km until 2030, and to 0 g/km until
+2035 [6]. This signifies the end of the Diesel and gasoline
+engines’ roles as the dominant technological choices for the
+light duty market in the EU. However, currently, the traditional
+combustion engine is still the predominant propulsion technol-
+ogy. In 2019 the global electric-light-vehicles sales accounted
+for only 2.5% [7]. Therefore, the need to find a replacement
+for the traditional combustion engine incentivices investments
+into alternative propulsion technologies that can comply with
+the net-zero CO 2goal.
+Hydrogen, which results from renewable energies, has
+long been known to be used as a CO 2-free energy carrier for
+vehicles. It can be utilized in two ways: Firstly, hydrogen
+can be used in fuel cells to generate an electric current, which
+is used to power an electric motor, or stored in a battery.
+One particular drawback of fuel cells is that they are still
+rather costly at the moment and require a very high degree of
+Preprint submitted to arxiv.org September 19, 2023arXiv:2309.09804v1  [eess.SY]  18 Sep 2023
+hydrogen purity, since even a low amount of impurity may
+decrease the fuel cell’s performance and irreversibly shorten
+its lifespan [8]. Secondly, hydrogen can be directly burned in a
+hydrogen combustion engine (H 2ICE). The following sections
+present a literature review that discusses the possibility of
+H2ICEs to meet future emission regulations, and explores
+the options to fill the gap, which will be left by conventional
+combustion engines.
+1.1. Literature Review on H 2ICE
+With the increasing focus on hydrogen as a clean and sus-
+tainable energy source, coupled with the necessity to explore
+alternatives to conventional combustion engines, the H 2ICE
+has emerged as a promising technology for the future. Authors
+like Shinde et. al. [9], or Falfari et. al. [10] even propose the
+H2ICE as the most immediate solution for the near future, as
+one of its main attractivenesses is that it takes advantage of the
+current advanced state of ICE technologies. This includes for
+instance the reliability and durability of combustion engines.
+Onorati et. al. [11] argue that the H 2ICE can serve, not only
+as a temporary fast-transition solution, but also as a long-term
+solution: They emphasize that already existing supply chains
+and manufactures, plus the already present recycling infras-
+tructure, make the H 2ICE a widespread solution to accelerate
+the large-scale introduction of H 2ICEs into the transportation
+market. The transferability of knowledge from conventional
+combustion engines was demonstrated in multiple publications:
+The authors of [12] review the applicability of H 2as a fuel
+for traditional internal combustion engines and conclude that
+it can be used in both spark ignition as well as compression
+ignition engines without any major modifications to the system.
+Additionally, in [13] the adaption of a single cylinder gasoline
+engine is described for hydrogen combustion and a peak
+efficiency of up to 47% could be achieved, highlighting the
+technology’s excellent combustion efficiency.
+For H 2ICEs to be considered a viable future propulsion
+system, they must also demonstrate compliance with forthcom-
+ing greenhouse gas emissions regulations. The new EURO 7
+norm for light-duty vehicles is to be expected to become effec-
+tive in 2025 and includes a fuel-neutral limit for tailpipe NO x
+emissions (from now on abbreviated with NOtp
+x) of 60 mg/km
+[14]. Hydrogen internal combustion engines have long been
+known for the ability to burn hydrogen with extremely low
+engine-out NO xemissions (from now on abbreviated with
+NOeo
+x) [15]. Different strategies are known to achieve such low
+NOeo
+xemissions during the combustion process of hydrogen.
+One way is to decrease the combustion temperature, which can
+be achieved for instance by exhaust gas recirculation (EGR)
+where already burnt gases are fed back and used in the next
+combustion. Heffel presents in [16], [17] the use of EGR to
+reduce the NOeo
+xformation of an H 2ICE. Although he could
+show that the NOeo
+xformation can be pushed below 10 ppm
+under stoichiometric conditions, most new publications discuss
+to exploit the wide flammability range of H 2to reduce NOeo
+x
+emissions. This characteristic allows to burn hydrogen using
+a large surplus of air to decrease the combustion temperature,which is known as ultra-lean combustion. Multiple groups
+have reported extremely low NOeo
+xemissions using air-to-fuel
+ratios up to λ≈3. Bao et. al. [18] show that the utilization
+of a turbocharger and improved injection pressure increase
+the H 2ICE’s power and efficiency simultaneously. This way
+they show that extremely low NOeo
+xemissions can be reached
+with a maximum brake thermal efficiency of 40.4%; Sementa
+et. al. [19] investigated different H 2dilutions in experiments
+and achieved stable combustion up to λ=3.4, presenting no
+CO emissions, very low HC emissions, originating from the
+lubricant oil, and extremely low NOeo
+xemissions.
+Whereas ultra-lean combustion can result in excellent
+emission characteristics, it also has the major drawback of
+a limited power density compared to stoichiometric or rich
+combustion conditions. To achieve a high engine power output,
+increasingly more H 2has to be injected, which ultimately
+leads to a lower air-to-fuel ratio. Two issues are to be expected
+in this situation: Firstly, since ultra-lean combustion is not
+possible anymore, increasing NOeo
+xemissions will occur, partly
+nullifying the H 2ICE’s advantage over conventional combus-
+tion engines. Secondly, at lower air-to-fuel ratios, H 2ICEs are
+known to exhibit combustion irregularities such as spontaneous
+ignition, or knocking [10]. This can be challenging for day-
+to-day applications in a car, as high engine-load operations are
+commonly encountered, e.g., acceleration in urban areas, or
+high-speed driving on the highway. However, if such a vehicle
+would additionally be equipped with a secondary torque
+source, e.g., an electric motor, theoretically, both issues could
+be tackled by assisting the H 2ICE during high engine-loads.
+In the following, the so-called energy management system
+(EMS) for hybrid electric vehicles (HEVs) is explained and (if
+handled properly) its positive effect on reducing the emissions
+is outlined. Additionally, a summary of the existing literature
+on HEVs that use an H 2ICE is presented.
+1.2. Hybrid Electric Vehicles
+The EMS is a necessary control algorithm for every HEV
+and stems from the fact that any HEV has more than one
+source to produce power. The EMS is concerned about the
+provision of the so-called driver’s power request, which is
+(given the vehicle speed and road inclination) a consequence
+of the driver’s desired vehicle acceleration. Assuming for
+instance that the driver demands 20 kW, it remains ambiguous
+whether this power should originate from the combustive part,
+the electric part, or a combination of both. This decision of
+the power allocation is referred to as the power split. Sciaretta
+et. al have shown in [20] the importance of an elaborate
+EMS algorithm. The authors compared nine different EMS
+algorithms for the same vehicle and reported that the best
+algorithm decreased the overall CO 2emissions by 28%.
+Early approaches for the EMS were of heuristic nature, i.e.,
+they consist of rules which are based on expert’s experience
+to decide the power split. State-of-the-art algorithms often
+are based on solving an optimization problem, which results
+of a mathematical description of the power allocation prob-
+lem. Such optimization problems are called optimal control
+2
+problems (OCPs) and include the formulation of mathematical
+constraint functions, which describe the HEV powertrain
+sufficiently well, and one (or possibly more) quality criterion
+for each realizable distribution of the power request. Typical
+quality criteria would be to achieve minimal CO 2emissions
+(e.g. [21]), or the prolongation of battery life (e.g. [22]).
+The goal of optimization-based EMS algorithms is to find the
+optimal power split by solving such an OCP using dedicated
+mathematical solvers.
+Overall, EMS control algorithms can be divided into two
+distinctively different categories, i.e., online controllers, and
+offline algorithms. Online controllers are designed such that
+they can be implemented on the vehicle’s embedded control
+unit. They are causal, meaning that all signals necessary for
+calculating the controller outputs are accessible at the instance
+of the computation process. Here, the main challenges are to
+achieve a good trade-off between computing a power split,
+which leads to acceptable CO 2emissions, and complying
+with the restrictions of the embedded hardware on the vehicle.
+Offline EMS algorithms, however, are simulative investigations
+of the potential of the HEV’s fuel saving capabilities. They are
+often described as non-causal, meaning that they have access
+to all constraints and disturbances of the OCP at each point in
+time. Here, the goal is to find the theoretically best possible
+solution to the OCP, which describes finding the HEVs optimal
+power split at every point in time for a predefined driving
+mission. Although such investigations cannot capture all
+effects that occur during real-world driving, they are a valuable
+tool to investigate the impact of different powertrain topologies
+on the achievable performance in simulation before building
+the physical system.
+One well-known extension of the energy management
+problem includes the NO xemissions. As a result, a typical
+multi-objective optimization problem is obtained, which means
+that the OCP includes two competing objectives, namely: the
+minimization of CO 2emissions, and the minimization of NO x
+emissions. Since these objectives are in conflict, such OCPs do
+not have one single optimal solution anymore, but a multitude
+of solutions that lie on the so-called Pareto front. Each solution
+on this Pareto front is a different optimal realization of the
+fuel-NO xtrade-off, i.e., reducing CO 2always comes at the
+expense of increasing NO x, and vice-versa. Using offline
+algorithms, Ritzmann et. al. have investigated the fuel-NO x
+trade-off potential of a parallel HEV that is equipped with a
+Diesel engine, and compared it to a non-electrified vehicle
+[23]. They have shown that for a comparable fuel consumption,
+the NOtp
+xcan roughly be halved by using the hybrid propulsion
+technology. Moreover, the fuel-NO xtrade-off that results from
+different choices of the EMS controller design, spans a wide
+range.
+Although the literature is rich in examples for experi-
+ments addressing HEVs that are equipped with either a Diesel
+engine or a gasoline engine, there are only few reports on
+vehicles that use hydrogen combustion as part of their HEV
+architecture (from herein on referred to as H 2-HEV). The onlytwo test vehicles presented in the literature are as follows:
+In [24], a standard sport utility vehicle has been converted
+into a hydrogen-powered H 2-HEV . In [25], a hydrogen engine
+propelled hybrid electric concept vehicle, called Ford’s H 2RV ,
+is described. In both studies, the authors state excellent NOtp
+x
+emissions while achieving low H 2consumption. However,
+the achieved results would not satisfy the future legislation
+limitations that are expected with the introduction of, e.g.,
+EURO 7. Two reasons can be identified for the relatively
+high NOtp
+xemissions: Firstly, both studies are based on old
+examples of vehicles (2006 and 2004). Secondly, both vehicles
+were equipped with EMS algorithms that are inferior to todays
+state-of-the-art methods, which can have a substantial influence
+on the fuel-NO xtrade-off (from now on referred to as the
+H2-NO xtrade-off).
+Only two publications are found in the literature regard-
+ing the simulative performance of an H 2-HEV that is equipped
+with a modern turbocharged H 2ICE. The first publication,
+written by Beccari et. al. [26], compares the CO 2emissions of
+a standard HEV with a Diesel engine to an H 2-HEV . Although
+not elaborated in detail, the authors simply describe to operate
+the combustion engine in its optimal operating point at each
+point in time. However, this does neither explain how the
+electrical components are operated, nor are any effects on the
+battery energy content shown and discussed. Additionally,
+the NO xemissions are not taken into consideration and the
+investigations are limited to one driving cycle.
+The second publication, written by Kyjovsk ´y et. al. [27],
+compares the CO 2and NO xemissions of parallel H 2-HEVs
+from different weight classes on the WLTC in simulation.
+They report good fuel consumption, while the lighter vehicles
+show NO xemissions below the limits imposed by EURO 6,
+without the use of an aftertreatment system. As the main focus
+of this publication lies in the investigation of turbocharging
+and engine downsizing, the EMS plays a subordinated role.
+Therefore, instead of computing the entire realizable Pareto
+front, a standard EMS algorithm is implemented, which results
+in a sub-optimal vehicle performance. As a result, the approach
+presented has two major shortcomings: Firstly, no measure
+is given of how much CO 2(or NO x, respectively) can be
+saved using a theoretically optimal EMS controller. Secondly,
+without the full Pareto front, it is impossible to know how
+much either of these two quantities could have been reduced at
+the expense of the other.
+1.3. Contribution
+In this publication, a simulative comparison between three
+different H 2-HEV architectures and a base H 2-vehicle, which
+is only equipped with an H 2ICE, is conducted. The different
+hybrid propulsion architectures feature a series H 2-HEV , a par-
+allel H 2-HEV , and a mixed H 2-HEV . The contribution of this
+publication is twofold.
+1. To the authors’ best knowledge, for the first time, this
+publication presents the full performance potential that
+3
+is achievable by an optimal EMS calibration on differ-
+ent H 2-HEVs. This includes the entire achievable trade-
+off between H 2consumption and engine-out NOeo
+xemis-
+sions. These H 2-NOeo
+xPareto fronts are obtained with
+the dynamic programming algorithm (DP), which guaran-
+tees global optimality for a predefined driving mission. A
+comparison on the WLTC reveals that all hybrid propul-
+sion architectures outperform the non-hybridized H 2ICE,
+whereas the mixed H 2-HEV is superior over the series and
+the parallel configuration.
+2. To solidify the findings, the achievable trade-off between
+H2consumption and engine-out NOeo
+xemissions of the
+mixed H 2-HEV is presented for a wide variety of driving
+missions. An in-depth analysis of different realizations of
+H2-NOeo
+x-optimal solutions provides insight into how the
+mixed H 2-HEV architecture can be exploited to operate
+the H 2ICE solely under ultra-lean conditions, resulting in
+extremely low NOeo
+xemissions. Consequently, two worst-
+case driving scenarios are analyzed to highlight the tech-
+nical limitations of the mixed H 2-HEV . In conclusion, to
+the authors’ best knowledge, this study provides the first
+complete overview of the potential of H 2-HEVs to satisfy
+future emission legislations, solely via the optimal calibra-
+tion of the EMS algorithm.
+The remainder of this paper is organized as follows: In
+Section 2, the different H 2-HEV models are outlined and the
+energy management problem including NOeo
+xemissions is for-
+mulated as an OCP. In Section 3, a comparison between the
+performance of the different H 2-HEVs and the base H 2-vehicle
+is presented on the WLTC. Furthermore, with regards to the H 2-
+NOeo
+xtrade-off, the benefits of hybridization over only using an
+H2ICE are discussed and the superiority of the mixed H 2-HEV
+is explained. In Section 4, the achievable H 2-NOeo
+xtrade-off of
+the mixed H 2-HEV is presented for four additional driving mis-
+sions, including two worst-case driving scenarios, highlighting
+the technology’s limitations. In Section 5, an outlook on future
+research is presented.
+2. Problem Description
+In this section, the four investigated drivetrain configurations
+are introduced. Firstly, the base H 2-vehicle is explained, then
+the three hybridized H 2-HEVs are presented. Subsequently the
+energy management problem including NOeo
+xemissions is out-
+lined.
+2.1. Drivetrain Configurations
+For the sake of comparison, the investigated H 2-HEVs are
+built upon the base H 2-vehicle, but with additional electrical
+components. This ensures uniformity across the analyzed
+vehicles with respect to the H 2ICE, aerodynamic drag and
+rolling resistance, and the base H 2-vehicle’s mass mbase. The
+H2-HEVs have additional weight, according to their individual
+electrical equipment. Table 1 summarizes the individual vehi-
+cle parameters. Note that the vehicle components are additive,
+meaning that, if, e.g., the series H 2-HEV is considered, then italso includes the components of the base H 2-vehicle and the
+parallel H 2-HEV .
+For all investigated propulsion architectures, the engine
+ON/OFF state is described by the binary variable e0and the
+clutch state (if a clutch is included) is described by the binary
+variable c0. While a value of e0=1indicates that the engine
+is running, e0=0indicates that it is turned off. Regarding the
+clutch, c0=1indicates that the clutch is engaged, while c0=0
+indicates that the clutch is open.
+Base vehicle:
+Figure 1 shows a schematic of the powertrain architecture of
+the base H 2-vehicle and electric parts in gray. The electric
+parts are only used in the parallel H 2-HEV drivetrain and are
+introduced in a section further down. The H 2ICE is connected
+γe,1−7
+battery
+motordifferentialclutch
+brakesH2ICE
+hydrogen tank
+H2
+γmotq
+Figure 1: Schematic of the base H 2-vehicle and the parallel H 2-HEV . The com-
+ponents that are grayed out are only part of the parallel H 2-HEV .
+to the front axle through a seven speed gearbox, the clutch, and
+a differential. The seven speed gearbox’s transmission ratios
+are denoted by γe,1−7. As for this vehicle the only power source
+is the H 2ICE, any positive torque request of the driver has to
+be supplied by the H 2ICE. If the torque request is negative, or
+zero, then the clutch is opened ( c0=0), the engine is shut-off
+(e0=0), and the friction brakes are used. As a result, engine
+idling is prevented. Engine braking is not considered in this
+work.
+Parallel H 2-HEV:
+The parallel H 2-HEV propulsion architecture results from
+adding the electrical parts that are grayed out in Figure 1.
+A torque split device, which is denoted by q, is used before
+the gearbox, resulting in a P3 hybrid. The additional electric
+motor uses the fixed-gear transmission γmotand can draw
+power from or feed power to the battery. In addition to the
+base weight of the vehicle, the electric devices account for
+me,par=160kg, which includes the battery, an electric motor,
+and power electronics.
+Series H 2-HEV:
+Figure 2 shows a schematic of the powertrain architecture of
+the series H 2-HEV and grayed out parts. The grayed out clutch,
+fixed gearbox, and torque split device are used in the mixed
+H2-HEV drivetrain and are introduced in a section further
+4
+down. The H 2ICE is not physically connected to the wheels,
+but is only used to produce electric energy via the generator.
+This electric energy is either directly used by the motor, fed
+to the battery, or employed in both ways simultaneously.
+The motor and the generator are the same make and model,
+whereas the motor has the same fixed transmission ratio as in
+the parallel H 2-HEV , and the generator has a different fixed
+transmission ratio γgen. In addition to the base weight of the
+vehicle, the electric devices account for me,ser=200kg, which
+includes the battery, the electric motor, the generator, and
+power electronics.
+γmotq
+battery
+motordifferential
+brakesH2ICE
+hydrogen tankH2
+generator
+γgen
+γe,mixclutch
+Figure 2: Schematic of the base series H 2-HEV and the mixed H 2-HEV . The
+components grayed out are only part of the mixed H 2-HEV .
+Mixed H 2-HEV:
+The mixed H 2-HEV propulsion architecture results from
+adding the parts in Figure 2 that are grayed out. The clutch
+can be used to connect the H 2ICE to the wheels via a fixed
+transmission γe,mixand the torque split device q. This drivetrain
+architecture is called mixed H 2-HEV , since it combines a series
+H2-HEV and a parallel H 2-HEV architecture. In addition to
+the base weight of the vehicle, the electric devices account for
+me,mix=200kg, which includes the battery, the electric motor,
+the generator, and power electronics.
+Driving modes:
+Hybrid electric vehicles encompass various driving modes that
+arise from the flexibility to either use multiple power sources
+simultaneously, or to rely on only one power source and to
+decouple, or switch off, the other one(s). The different driving
+modes are denoted by M∈ {1,2,3}in this work, and are
+listed in Table 2. In series mode, the H 2ICE is running, but
+it is decoupled from the wheels, i.e., any requested power is
+fully delivered by the motor. In parallel mode, the H 2ICE is
+running and physically coupled to the wheels. In this mode,
+both propulsion systems (H 2ICE and motor) can provide power
+to the wheels. It also enables load-point shifting, where the
+combustion engine produces more power than is required at
+the wheels and the access power is stored in the battery. In EV
+mode, the combustion engine is off and decoupled from the
+wheels. The entire torque request is met by the motor.
+2.2. Drivetrain Model
+The modeling approach used in this work is based on [28]
+and is outlined in the following.Table 1: Vehicle parameters of the four propulsion architectures.
+base H 2-vehicleweight 1300 kg
+H2ICE4-cyl
+163 kW
+parallel H 2-HEVmotor173 kW
+40 kg
+battery230 V
+11 kWh
+120 kg
+series- & mixed H 2-HEV generator173 kW
+40 kg
+Table 2: Driving modes of the different propulsion architectures.
+Series mode c0=0,e0=1M=1
+Parallel mode c0=1,e0=1M=2
+EV mode c0=0,e0=0M=3
+Propulsion systems:
+The engine’s fuel consumption and the NOeo
+xemissions are
+obtained using steady-state mappings that were evaluated on a
+test bench and depend on the engine speed ωeand the engine
+torque Te:
+˙mf=f(ωe,Te) (1)
+˙mNO x=f(ωe,Te). (2)
+The obtained maps are depicted in Figure 3. Extremely low
+NOeo
+xcan be reached under low-load conditions. This is pos-
+sible as the turbocharged H 2ICE is calibrated to operate under
+ultra-lean combustion conditions in this region, leading to NOeo
+x
+emissions below 2 mg/s.
+ηe [%]NOxeo [g/s]
+Figure 3: Left: H 2ICE efficiency map. Right: NOeo
+xmap.
+The electric motor and generator losses are stored in maps that
+are derived from high-fidelity component models:
+Plmot=f(Tmot,ωmot), (3)
+Plgen=f(Tgen,ωgen). (4)
+They depend on the torque and the rotational speed of the cor-
+responding component. Their efficiency maps are depicted in
+Figure 4.
+5
+η [ %]Figure 4: Left: Generator efficiency map. Right: Motor efficiency map. Motor
+and generator are of the same make and model.
+Torque request:
+The requested force at the wheels is a function of the aerody-
+namic drag force and rolling resistance Fd, the gravitational
+force Fg, and the inertial force Fito accelerate the vehicle:
+Freq=Fd(v)+Fg(Γ)+Fi(a), (5)
+where Γdenotes the road gradient, vthe velocity, and athe ve-
+hicle acceleration. The resistive force Fdis approximated using
+a quadratic dependency on v. The inertial force Fiis calculated
+by accelerating the total mass of the vehicle mtot:
+Fi=mtot·a,
+mtot=mbase+me,par ,if parallel H 2-HEV,
+mbase+me,ser ,if series H 2-HEV,
+mbase+me,mix ,if mixed H 2-HEV,(6)
+where me,j,j∈{par,ser,mix}accounts for the sum of all addi-
+tional electric devices that make up the hybridized versions of
+the base H 2-vehicle. The resulting torque request is calculated
+using the wheel’s radius rw:
+Treq=Freq·rw. (7)
+The torque request has to be provided by the vehicle’s com-
+bined drivetrain. For the case of the base H 2-vehicle, the entire
+torque is delivered by the H 2ICE, which means that the H 2
+consumption and NOeo
+xemissions can directly be calculated
+using (1) and (2). For the case of the H 2-HEVs, the torque
+request can be divided between multiple power sources at
+each point in time. This power distribution is explained in the
+following for the mixed H 2-HEV . However, the torque splits
+for the parallel H 2-HEV and the series H 2-HEV can directly be
+obtained from the same description.
+Rotational Speeds:
+Before the torque split is introduced, the description of the
+rotational speeds of the mixed H 2-HEV components are
+explained. From the vehicle speed, the wheel speed calculates
+as:
+ωw=v
+rw. (8)
+As the motor is always physically coupled to the wheels, its
+speed is directly defined by:
+ωmot=ωw·γfd·γmot, (9)whereasγfdandγmotare the fixed gear ratios of the final drive,
+and the motor, respectively. The engine is not always physically
+coupled to the wheels, as this connection depends on the driving
+mode. If the vehicle is in parallel mode, ωeis defined by the
+wheel speed and the respective engine transmission ratio γe,i.
+The engine transmission is different for the individual vehicles,
+which is here denoted by the subscript i∈{mix,1−7}. The
+mixed H 2-HEV’s gear ratio γe,mixis fixed, whereas for the base
+H2-vehicle and for the parallel H 2-HEV ,γe,1−7is defined by the
+seven-speed gearbox, which again is encoded via the vehicle
+speed. However, if the vehicle is in series mode, or in EV mode,
+then the clutch is open and ωeis defined by the generator speed
+ωgen:
+ωe=ωw·γfd·γe,i,ifM=2,
+ωgen
+γgen,ifM∈{1,3},(10)
+whereasγgenis the fixed gear ratio of the generator.
+Similar to the engine speed, the generator speed depends
+on the driving mode. In parallel mode, ωgenis fixed by the
+vehicle speed. In EV mode, the generator is switched off by
+design and its rotational speed is zero. In series mode, the
+generator speed can be chosen freely and does not depend on
+the vehicle speed.
+ωgen=∈[ωmin
+gen, ωmax
+gen],ifM=1,
+ωw·γfd·γgen ,ifM=2,
+0 ,ifM=3.(11)
+Here,ωmin
+genandωmax
+genrepresent physical limits implied by the
+engine idle speed and the engine max speed.
+Torque Split:
+After all rotational speeds are defined, the torque split for the
+mixed H 2-HEV can be formulated. Including the efficiency of
+the final drive ηfd, the torque request is calculated before the
+torque split device as:
+Treqfd=Treq/γfd÷ηfd,ifTreq≥0,
+Treq/γfd·ηfd,ifTreq<0.(12)
+Considering the motor gearbox efficiency ηGB mot, the torque
+split device qis used to distribute Treqfdbetween the electric
+motor torque:
+Tmot req=Treqfd·q,
+Tmot=Tmotreq
+γmot÷ηGB mot ,ifTreqfd≥0,
+Tmotreq
+γmot·ηGB mot ,ifTreqfd<0,(13)
+and the torque that is requested from the combined engine-
+generator-unit:
+Tereq=Treqfd·(1−q). (14)
+In series mode and in EV mode, the full power is delivered by
+the motor. But in parallel mode, the torque split can be chosen
+arbitrarily as long as the torque distribution can be delivered by
+6
+the corresponding components. Therefore, the possible choice
+of torque splits is defined as:
+q=1 ,ifM∈{1,3}
+]−∞,∞[,ifM=2.(15)
+As the generator and the engine are physically coupled, the fi-
+nal torque, which the engine has to deliver, is defined by the
+generator gearbox efficiency ηGBgen and the generator torque:
+Te=Tereq−Tgen·γgen
+ηGBgen. (16)
+Similar to the torque split, the choice of obtainable generator
+torques depends on the driving mode:
+Tgen=[Tmin,Tmax]M∈{1,2}
+0 M=3.(17)
+The torque bounds TminandTmaxrepresent the torque limits
+of the combined engine-generator unit. Finally, to calculate the
+electric power that is drawn from the battery, the source power
+that is provided by the motor and generator calculates as:
+Pmot s=Tmot·ωmot+Plmot, (18)
+and
+Pgens=Tgen·ωgen+Plgen. (19)
+The battery is modeled using a Th ´evenin equivalent model [28].
+The current Iband that results from a requested battery power
+Pbcalculates as
+Ib=Voc−p
+V2oc−4RiPb
+2Ri,
+Pb=Pmot s+Pgens+Paux,(20)
+where the inner resistance Riand the auxiliary losses Pauxare
+assumed to be constant. The battery source power calculates as
+Psb=Pb+Plb,
+Plb=Ri·I2
+b,(21)
+where the battery internal losses are denoted by Plb. The high-
+voltage battery open circuit voltage Voccan be approximated
+to depend linearly on the state of charge (SoC) [29] and is de-
+scribed in this work as:
+Voc=αbat·SoC+βbat, (22)
+whereαbat,βbatare fitted parameters. The battery SoC dynam-
+ics are described by:
+˙SoC=−Psb
+Qmax·Voc, (23)
+where Qmaxis the full battery capacity.
+Overall, the above introduced torque split description is
+valid for the mixed H 2-HEV architecture. However, the torque
+splits for the series H 2-HEV and the parallel H 2-HEV are
+obtained by choosing the corresponding parts of (10), (11),
+(15), and (17).2.3. Energy Management Including NOeo
+x:
+To formulate the optimal control problem of the energy man-
+agement including NOeo
+x, the vector of dynamic state variables
+and its derivative are defined as:
+x=[SoC,meo
+NO x]T,
+˙x=[˙SoC,˙meo
+NO x]T=f(x,u).(24)
+Here, the accumulated and instantaneous NOeo
+xemissions are
+denoted by meo
+NO x, and ˙meo
+NO x, respectively. The variable urepre-
+sents the vector of control inputs, which depends on the investi-
+gated vehicle. The most general case is for the mixed H 2-HEV ,
+as this architecture offers all degrees of freedom to manipulate
+the torque split. It is defined as:
+u=[Tgen, ωgen,q,M]T. (25)
+The base H 2-vehicle and the remaining H 2-HEVs use a subset
+ofu. Table 3 lists an overview of the sets of control inputs for
+all investigated vehicles.
+Table 3: Overview of the degrees of freedom of the investigated propulsion
+architectures.
+Tgenωgen q M
+Base H 2-vehicle××××
+Parallel H 2-HEV×× ✓{2,3}
+Series H 2-HEV ✓ ✓×{1,3}
+Mixed H 2-HEV ✓ ✓ ✓{1,2,3}
+The goal of solving the optimal control problem of the
+energy management including NOeo
+xemissions (from here on
+referred to as OCP) is to find the optimal power distribution for
+a predefined driving mission, such that the H 2consumption is
+as low as possible, while the NOeo
+xemissions are kept below an
+upper limit ¯meo
+NO x. The OCP is written in time domain, i.e., the
+driving mission starts at the time instance t0and ends at time
+instance tf. The vehicle has to be operated in charge-sustaining
+mode, i.e., the SoC must be the same at the end and at the
+start of the driving mission. Using the definitions for x,u,
+and equations (8)–(22) as constraints, the OCP is written as
+follows:
+min
+uZtf
+t0˙mfdt (26a)
+s.t. Treqfd=Tereq+Tmot req (26b)
+˙SoC=f(x,u) (26c)
+˙meo
+NO x=f(u) (26d)
+SoC( t0)=0.7 (26e)
+SoC( tf)=0.7 (26f)
+meo
+NO x(t0)=0 (26g)
+meo
+NO x(tf)≤¯meo
+NO x(26h)
+u∈U (26i)
+x∈X. (26j)
+7
+Equation (26b) is called the driveability constraint and ensures
+that the driver’s torque request is fulfilled. The set of feasible
+inputs (26i) encompasses the constraints that are defined by
+(11), (15), (17), as well as, the physical limitations of the
+drivetrain’s components. The set of feasible state variables
+(26j) encompasses constant bounds on SoC ∈[0.3,0.9]and
+constant bounds on meo
+NO x∈[0,¯meo
+NO x].
+The OCP at hand is a nonlinear mixed-integer optimal
+control problem. Although, the dynamic programming algo-
+rithm (DP) could directly be used to solve the problem with
+optimality guarantees, the so-called curse of dimensionality
+[30] hinders its effective applicability. Therefore, a shooting al-
+gorithm is exploited to reduce the problem’s dimensionality by
+eliminating the meo
+NO xstate without jeopardizing the solution’s
+global optimality. A slight adaption of the PMP-DP-algorithm
+that was proposed in [31] is used. A sketch of the idea is
+outlined in the following: Instead of solving the OCP (26)
+only for one upper bound ¯meo
+NO x, the cost function (26a) is
+adjoined with an equivalent fuel consumption weight for the
+˙meo
+NO xemissions, and this resulting adapted optimal control
+problem is solved multiple times for different weights. On
+the one hand, adjoining the ˙mNO xdynamics allows to omit the
+constraint (26h), which can be leveraged to greatly decrease
+the computational burden, compared to solving the original
+OCP with the DP algorithm. On the other hand, this shooting
+method results in a Pareto front for the H 2-NOeo
+xtrade-off,
+which will be discussed in the following.
+3. Results: WLTC
+The performance of the investigated propulsion architectures
+is analyzed using the results obtained with the adapted PMP-
+DP algorithm. Depending on the choice of the upper limit
+¯meo
+NO xin (26h), different optimal EMS calibrations are realized
+for the same driving mission, which results in a Pareto front.
+All Pareto fronts in this paper are normalized using H 2,0and
+NOeo
+x,0, which are the H 2consumption and NOeo
+xemissions of
+the base H 2-vehicle, respectively. As for the base H 2-vehicle,
+no torque split can be optimized, these values are fixed to a
+corresponding driving mission.
+Figure 5 shows the trade-off between the H 2consump-
+tion and the NOeo
+xemissions for the WLTC. The different
+hybridized propulsion configurations are shown in yellow,
+red, and blue for the parallel, series, and mixed H 2-HEV ,
+respectively. Depending on the torque distribution, different
+H2consumptions and NOeo
+xemissions ensue. From here on,
+the H 2-optimal EMS calibration of the mixed H 2-HEV will
+be indicated byS⋆and is depicted by the point farthest to the
+right of the corresponding Pareto front. The NOeo
+x-optimal
+EMS calibration of the mixed H 2-HEV will be indicated by
+S■and is depicted by the point the farthest to the left of the
+corresponding Pareto front. Each point on the corresponding
+Pareto front represents a realizable EMS calibration which
+results in a unique combination of NOeo
+xemissions and H 2
+consumption, demonstrating that a hybridized powertrainarchitecture opens a large range of realizable trade-offs. To
+enable a comparative assessment of the individual vehicles, a
+specific level of accumulated NOeo
+xemissions is established,
+and the corresponding hydrogen consumptions of each vehicle
+are then compared. This concept is graphically represented
+by the black dashed line. To facilitate below analysis, the
+intersection of the mixed H 2HEV’s Pareto front and black
+dashed line is the EMS calibration denoted by S−−.
+S--S■
+S⋆
+Figure 5: Achievable H 2-NOeo
+xtrade-off for the mixed H 2-HEV , the series
+H2-HEV , and the parallel H 2-HEV . The results are normalized using H 2,0and
+NOeo
+x,0, both of which are obtained by simulations of the base H 2-vehicle. The
+black, dotted line represents an arbitrary accumulated NOeo
+x,0value and is used
+for comparison.
+3.1. Base vehicle vs mixed H 2-HEV
+The blue line depicts the Pareto front, which can be achieved
+using the mixed H 2-HEV . The EMS calibration, which emits
+the same NOeo
+xemissions as the base H 2-vehicle, is located
+where its x-value equals to one. As a result, this simulation
+study reveals that for the same NOeo
+xemissions, an H 2reduc-
+tion potential of 16.8% is possible with the use of the mixed
+H2-HEV . Even more remarkable is that the realizable NOeo
+x
+emissions by the mixed H 2-HEV can be more than one order of
+magnitude lower than what is achieved by the base H 2-vehicle.
+This suggests that the base H 2-vehicle cannot be operated
+under ultra-lean combustion conditions throughout the entire
+drive mission.
+To investigate the base H 2-vehicle’s NOeo
+xemissions in
+detail, the operating conditions of its H 2ICE are analyzed
+below. Figure 6 shows in the upper plot all operating points
+of the base vehicle in the engine efficiency map and the NOeo
+x
+map. Two things can be noted here: Firstly, many operating
+points lie in the low-load region, which is a well-known issue
+resulting in a low mean engine efficiency compared to hybrid
+powertrain configurations. Secondly, the NOeo
+xmap predicts a
+steep increase in NOeo
+xproduction for increased engine torques.
+Although, most of the engine operating points are located in a
+region where very low NOeo
+xemissions occur, some operating
+points of the base H 2-vehicle lie critically close to the steep
+region.
+To investigate these critical points in detail, the middle plot
+shows a time-resolved graph of the NOeo
+x,0emitted by the
+base H 2-vehicle normalized by the NOeo
+xemitted byS−−of
+8
+the mixed H 2-HEV . It shows that, most of the time, both
+vehicles have NOeo
+xemissions, which have the same order of
+magnitude. However, the spikes in this signal reveal where the
+base H 2-vehicle emits substantially more NOeo
+x.
+The lowest plot shows the velocity profile of the investigated
+WLTC. The driving scenarios leading to the NOeo
+x-spikes are
+highlighted by red dots. They occur at high vehicle speed,
+i.e., highway driving, or when accelerating with more than
+1 m/s2during urban driving. Since such driving patterns are
+common in daily road traffic it can be concluded that the base
+H2-vehicle cannot be operated under extremely low NOeo
+x
+emissions conditions in normal driving.
+ηe [%] NOxeo [g/s]
+Figure 6: Base H 2-vehicle operating conditions on the WLTC. Top: Engine
+operating points superimposed on the engine efficiency map and the NOeo
+xmap.
+Middle: Time-resolved and normalized NOeo
+x,0emissions. Bottom: Velocity
+profile of the WLTC with NOeo
+x,0peaks marked by red dots.
+3.2. Hybridized drivetrains
+As the base H 2-vehicle cannot reliably ensure extremely low
+NOeo
+x,0emissions, an investigation is conducted below about
+how the mixed H 2-HEV is able to reach lower NOeo
+xemissions.
+Comparing the red and the yellow lines in Figure 5 shows that
+the H 2saving potential of the series H 2-HEV and the parallel
+H2-HEV are comparable on the WLTC. The EMS calibrations,
+which are indicated by the intersections of the Pareto fronts
+with the black, dotted line reveal that the series H 2-HEV is able
+to obtain a 0.8% lower H 2consumption compared to the paral-
+lel H 2-HEV . With the mixed H 2-HEV architecture however, the
+H2saving potential is 5%, compared to the parallel H 2-HEV .
+To understand how the mixed H 2-HEV’s EMS is able to reduce
+the accumulated NOeo
+xemissions, the solutions S⋆andS−−of
+this drivetrain architecture are compared below.
+Figure 7 depicts the engine operating points of these two solu-
+tions, superimposed on the engine efficiency map and the NOeo
+x
+map. Two things can be noticed here: Firstly, it is optimal in
+both scenarios to omit low-load engine operating points, i.e.,
+ηe %]
+NOxeo [g/s]S⋆-calibration S---calibrationFigure 7: Left: Engine operating points superimposed on the engine efficiency
+map and the NOeo
+xmap resulting of the EMS calibration S⋆. Right: Engine
+operating points superimposed on the engine efficiency map and the NOeo
+xmap
+resulting of the EMS calibration S−−.
+Te⪅45Nm. This is a well-known result and usually one of
+the main drivers to reduce the overall fuel consumption of any
+HEV equipped with a combustion engine. Secondly, the opti-
+mal EMS calibration S−−is achieved by omitting too high-load
+engine operating points. The maximum engine torque does not
+surpass the NOeo
+x-isoline, which is highlighted by the green line.
+Above this line, the emitted NOeo
+xincrease rapidly, as ultra-lean
+operation of the H 2ICE is no longer possible.
+4. Different Driving Missions
+So far, it was shown that the mixed H 2-HEV has superior
+performance compared to the other H 2-HEVs and the base
+H2-vehicle. In the following, to further highlight the potential
+for reducing the NOeo
+xof this drivetrain structure, a specific
+EMS calibration is selected, which achieves 90% less NOeo
+x
+than the base H 2vehicle. It is denoted by S▲.
+The remainder of this publication is used to investigate
+whether the potential of the mixed H 2-HEV to reduce the
+NOeo
+xemissions can be generalized to other driving missions.
+Consequently, four additional driving missions are introduced
+and their corresponding Pareto fronts are presented. The first
+two represent more realistic driving scenarios. The third and
+the fourth driving mission are used to show the limitations of
+the mixed H 2-HEV powertrain architecture to reduce NOeo
+x.
+Finally, most state-of-the-art EMS algorithms (e.g., [26],
+[27]) only pay attention to minimizing the H 2consumption
+resulting (in the best case) in S⋆. As in this work, the possi-
+bility to decrease the NOeo
+xat the expense of an increased H 2
+consumption is discussed, three additional key parameters are
+introduced below. On the one hand, they serve the purpose
+of facilitating a contrast between different realizations of the
+H2-NOeo
+xtrade-off, and on the other hand, they emphasize the
+advantages of the hybridization of the base H 2-vehicle. In par-
+9
+ticular, the EMS calibration S▲is investigated, as it provides
+a substantial decrease in NOeo
+xat a marginally increased H 2
+consumption. For convenience, and to enable a comparison
+among the individual driving missions, all key parameters are
+summarized in Table 4.
+Key performance parameters:
+Firstly, if not the H 2-optimal EMS calibration is chosen, but
+instead the EMS calibration S▲, the following increase in H 2
+consumption occurs:
+∆Hadd
+2=1−HS⋆
+2
+HS▲
+2. (27)
+Secondly, the highest possible NOeo
+xemissions reduction of the
+mixed H 2-HEV compared to the base H 2-vehicle calculates as:
+feo,S■
+x =NOeo,S■
+x
+NOeo
+x,0. (28)
+It is achieved by the EMS calibration S■and it describes the
+mixed H 2-HEV’s limit to reduce NOeo
+x.
+Thirdly, the last key parameter describes how much H 2
+the mixed H 2-HEV saves, while aiming for a reduction of 90%
+NOeo
+xemissions, compared to the base H 2-vehicle:
+∆H2=1−HS▲
+2
+H2,0. (29)
+It is mainly used to showcase how powerful the hybridization
+of a vehicle with an H 2ICE can be.
+4.1. Realistic Driving Scenarios
+On the left hand side of Figure 8, two additional realistic
+driving scenarios are depicted. The first driving mission is
+extracted from the open-source software SUMO [32] and is
+referred to as urban cycle . The second driving mission is based
+on recorded sensor data of a real vehicle and features a mix of
+urban driving, rural driving, and highway driving. It is referred
+to as real driving cycle . Both missions feature an extensive
+elevation profile.
+On the right hand side of Figure 8, the corresponding
+H2-NOeo
+xPareto fronts are depicted for both driving missions.
+For both driving missions, there exist EMS calibrations S▲
+achieving the intended significant NOeo
+xreductions. The factor
+∆Hadd
+2shows that these large reductions in NOeo
+xcome at an
+increased hydrogen consumption of only 2.2% ( urban cycle ),
+or 5.8% ( real driving cycle ). The factor ∆H2shows that it
+is possible to reduce the base H 2-vehicle’s NOeo
+xemissions
+by 90%, while still saving 61.2% ( urban cycle ), or 16.1%
+(real driving cycle ), respectively. Finally, an even lower
+NOeo
+xemission level can be achieved, i.e., feo,S■
+x =99% and
+feo,S■
+x =96.6% on the urban cycle , and the real driving cycle ,
+respectively.4.2. Worst-case driving scenarios
+The analysis of the Pareto fronts obtained for the urban cycle
+and the real driving cycle show that for driving patterns that are
+likely to occur during day-to-day driving, the mixed H 2-HEV
+provides a large range of H 2-NOeo
+xtrade-offs to choose from.
+This section now focuses on extreme driving scenarios, which
+are chosen to show the limitations of the mixed H 2-HEV . The
+main tool to decrease the NOeo
+xemissions via hybridization
+of the propulsion architecture bases on omitting too high
+engine-load operating points. So far, the investigated driving
+missions all include a broad range of different torque requests,
+and, for these missions, the results obtained by DP show
+that the mixed H 2-HEV is a promising topology to enable a
+large range of realizable H 2-NOeo
+xtrade-offs. Therefore, two
+additional driving missions are presented in the following,
+which mainly consist of high torque requests.
+Mountain Cycle :
+The left hand side of Figure 9 depicts the mountain cycle ,
+which is inspired by a mountain pass in the Swiss alps, and
+represents a trip including a continuous climb of over 1270 m.
+It is assumed that no other road users are present, i.e., other
+than in the hairpin turns, the vehicle speed is constant at
+70 km/h.
+The right hand side of Figure 9 depicts in blue the achievable
+Pareto-optimal H 2-NOeo
+xtrade-off for the mixed H 2-HEV
+on the mountain cycle . To highlight the importance of the
+parallel mode for this kind of driving missions below, the series
+H2-HEV’s Pareto front is shown in red. There exists an EMS
+calibrationS▲, which achieves the intended significant NOeo
+x
+reductions. It results in an increase of hydrogen consumption
+of∆Hadd
+2=5.9%. The factor ∆H2shows that it is possible
+to reduce the base H 2-vehicle’s emissions by 90%, while
+saving 38.9% H 2. Finally, an even lower NOeo
+xemission level
+can be achieved, i.e., feo,S■
+x =98.6%, showing that despite
+the considerable power demand required for ascending the
+elevation, the mixed H 2-HEV is able to decrease the NOeo
+x
+emissions with a proper EMS calibration.
+Comparing the blue and red Pareto fronts shows that the
+mixed H 2-HEV is able to utilize the parallel mode to ef-
+fectively decrease the H 2consumption. How the parallel
+mode is used, is outlined in the following: Figure 10 displays
+the optimal distribution of the torque request between the
+engine and the motor, evaluated at the differential. The torque
+distribution is only shown for the parallel mode of the two
+Pareto-optimal EMS calibrations S▲andS⋆. First of all, the
+optimal engine usage (depicted by the circles) is analyzed for
+both EMS calibrations: For torque requests below 100 Nm
+it is optimal to use load-point shifting (,i.e., increasing the
+produced engine power above what is required at the wheel to
+store excess power via the motor in the battery) to additionally
+recharge the battery. This is depicted by Teabove the dashed
+45◦-line. This allows to simultaneously operate the H 2ICE
+in a higher efficiency operating point (without getting into
+the high-NOeo
+xregion) and to further charge the battery with
+10
+S▲S■
+S⋆S▲S■
+S⋆
+-90%
+-90%Figure 8: Left: Driving missions: ” urban cycle ” and ” real driving cycle ”. Right: H 2-NOeo
+xPareto-optimal operations of the mixed H 2-HEV for the corresponding
+driving missions. The results are normalized using H 2,0and NOeo
+x,0of the base H 2-vehicle. Three EMS calibrations, i.e., S⋆,S▲, andS■are highlighted for the
+mixed H 2-HEV and both driving cycles.
+S▲
+S⋆S■-90%
+Figure 9: Left: Driving missions: ” mountain cycle ”. Right: H 2-NOeo
+xPareto-optimal operations of the mixed H 2-HEV for the ” mountain cycle ”. The results are
+normalized using H 2,0and NOeo
+x,0of the base H 2-vehicle. Three EMS calibrations, i.e., S⋆,S▲, andS■are highlighted for the mixed H 2-HEV .
+electric energy that can be spent later on. The total positive
+electric energy throughput in EV mode is decreased by roughly
+65% (from 4.1 MJ in S⋆to 2.6 MJ inS▲). This shows that,
+over the entire driving mission, the usage of EV mode is
+decreased, and the battery electric energy is increasingly used
+in parallel mode. While driving in parallel mode, the electric
+energy is used to relieve the engine of too high load-points
+that occur during uphill driving. Focusing on the blue circles,
+the H 2-optimal EMS calibration is obtained by respecting a
+(slightly scattered,) preferred maximum engine torque, which
+is achieved by additionally boosting with the electric motor
+(indicated by the red crosses). The electric motor is used
+such that the H 2ICE is run in its highest speed-dependent
+fuel-efficiency operating points (compare to Figure 3).
+The yellow circles and purple crosses represent the en-
+gine torque and the motor torque for the EMS calibration S▲.
+Again, there exists an upper engine torque limit at around
+100 Nm, until which the entire torque request is supplied solely
+by the engine, and beyond which any additional torque request
+is supplied by boosting with the motor. However, here thisbound is more distinct and lower than in S⋆, revealing that the
+electric motor is used to prevent high engine torques.
+Comparing the blue and red Pareto fronts in Figure 9, the
+importance of the parallel mode for this driving missions is
+demonstrated. Although, extremely low NOeo
+xemissions can
+be achieved by the series H 2-HEV , these EMS calibrations can
+come at a relatively high H 2consumption, when compared to
+the mixed H 2-HEV . In conclusion, electric boosting in parallel
+mode is utilized by the mixed H 2-HEV to operate the H 2ICE
+under extremely low NOeo
+xconditions, while still keeping
+the H 2consumption at a low level. However, this torque
+distribution strategy is only viable, if the driving missions
+offers enough potential for circulating energy, i.e., energy
+that is stored temporarily in the vehicle body as kinetic and
+potential energy and used to recharge the battery.
+Highway Cycle :
+As was shown for the mountain cycle , circulating energy
+is leveraged by the mixed H 2-HEV to achieve a broad range
+of H 2-NOeo
+xtrade-offs. The following cycle is constructed
+11
+S▲S⋆
+S⋆-calibration
+- calibration
+- calibration
+- calibrationS▲Figure 10: Distribution of the torque request of two optimal EMS calibrations
+(i.e.,S▲,S■) of the mixed H 2-HEV on the mountain cycle . Only the parallel
+mode is displayed. The black dashed line represents the 45◦-line.
+such that it offers no circulating energy at all. The left hand
+side of Figure 11 depicts the highway cycle . Similar to the
+mountain cycle , high torque requests occur in this scenario.
+The difference is that the highway cycle is an artificial scenario,
+which is constructed to solely consist of high, positive torque
+requests: After a short acceleration phase, the vehicle reaches
+a constant speed of 142 km/h, which requires a torque request
+of 372 Nm at the wheel to maintain the speed level for the
+rest of the driving mission. In parallel mode, this requirement
+translates to an engine speed of ωe= 352 rad/s. If the engine
+was to provide the full torque request on its own, it would
+need to provide a torque of Te=153 Nm, which results in a
+good fuel efficiency, but cannot be sustained under ultra-lean
+combustion conditions and therefore results in high NOeo
+x
+emissions. Decreasing the engine load via electric boosting and
+thereby lowering the NOeo
+xis infeasible: On the one hand, the
+EMS is required to satisfy the charge-sustainability constraint
+(26f) over the entire driving mission. On the other hand, this
+driving mission offers no opportunities to recuperate braking
+energy or to use load point shifting, as the goal is to reduce the
+engine load.
+The right hand side of Figure 11 depicts the achievable
+Pareto-optimal H 2-NOeo
+xtrade-offs for the the parallel H 2-HEV
+and the mixed H 2-HEV in red and blue, respectively. Most
+notably is that the EMS calibration S▲cannot be reached,
+given that the reduction of NOeo
+xemissions to that extent is
+unattainable. The lowest possible cumulated NOeo
+xemissions
+arefeo,S■
+x = 71.6% lower than what is achieved by the base
+H2-vehicle. But, this reduction of NOeo
+xcomes at the cost of a
+greatly increased H 2consumption, which is 17% higher than
+the base H 2-vehicle, and 18.5% higher than the H 2-optimal
+EMS calibrationS⋆. This significant rise in H 2consumption
+is primarily due to the fact that the base H 2-vehicle can almost
+exclusively operate its H 2ICE at a highly efficient operating
+point, meaning that a hybridized drivetrain can not increaseits mean efficiency by any significant amount. However, the
+mixed H 2-HEV is still able to offer great flexibility to adjust
+the H 2-NOeo
+xtrade-off, which heavily depends on the usage of
+the series mode.
+Figure 12 provides further insight into how four different
+optimal EMS calibrations, i.e., S⋆,S1,S2, andS■, use the
+series mode to achieve the corresponding values for the cumu-
+lated NOeo
+xemissions. For each EMS calibration, the complete
+set of engine operating points is shown in the NOeo
+x-emissions
+map. Following the graphs from the top left towards the
+bottom right, the individual strategies depicted reduce the
+cumulated NOeo
+xstep by step. Green circles indicate parallel
+mode with additional support of the electric motor, blue circles
+indicate parallel mode where only the H 2ICE produces power
+(comparable to a conventional vehicle), and red circles indicate
+series mode. The size of the circles indicates the amount of
+times that the corresponding operating point is chosen. For
+the H 2-optimal EMS calibration S⋆, most of the cycle is
+driven solely using the H 2ICE. The parallel mode is used at
+the beginning to assist in the acceleration of the vehicle with
+the electric motor, before the H 2ICE takes over shortly before
+reaching 142 km/h.
+When gradually decreasing the cumulated NOeo
+x, three changes
+in the optimal EMS calibration can be identified. Firstly,
+pure conventional driving is substituted by an electrically
+assisted use of the H 2ICE, which is indicated by replacing the
+blue circle with a green one. The electric energy needed to
+ensure charge-sustainability is generated via the series mode.
+Secondly, when transitioning from S1toS2, a shift from
+parallel mode to series mode is observed, which is indicated
+by the growing size of the red circles and a shrinking size of
+the green circle. This ultimately leads to solely operating the
+vehicle in series mode. Thirdly, in series mode, the H 2ICE
+operating points are shifted to ever higher engine speeds the
+lower the cumulated NOeo
+xemissions get. The reason for this
+transition is given by the fact that it allows to sustain the engine
+power output, while decreasing the engine torque. This enables
+the engine-generator unit to deliver electric power to the motor
+or the battery, without increasing (or even decreasing) the
+NOeo
+xemissions. However, this shift comes at the price of
+an increased H 2consumption, as the engine efficiency drops
+above approximately 230 rad/s. In conclusion, the series mode
+is utilized by the mixed H 2-HEV to achieve extremely low
+cumulated NOeo
+xemissions, even if not enough circulated
+energy can be recuperated. However, there is a limit to the
+maximum torque request that can be provided under ultra-lean
+combustion conditions. At some point, the torque request is
+too large and the engine-generator unit cannot shift to ever
+higher engine speeds. As a result, Tehas to be increased, which
+directly leads to increased NOeo
+xemissions.
+5. Conclusion
+To the authors’ best knowledge, this paper provides the
+first full potential analysis of electrically hybridized vehicles
+equipped with an H 2ICE. A wide flexibility for choosing a
+12
+S1S■
+S⋆S2S▲
+S⋆S■Figure 11: Left: Driving missions: ” highway cycle ”. Right: H 2-NOeo
+xPareto-optimal operations of the mixed H 2-HEV for the ” highway cycle ”. The results are
+normalized using H 2,0and NOeo
+x,0of the base H 2-vehicle. Four EMS calibrations, i.e., S⋆,S1,S2, andS■are highlighted for the mixed H 2-HEV .
+S⋆-calibration
+-calibrationS■-calibrationS2S1-calibrationconv. mode  
+series mode
+ parallel mode
+Figure 12: Engine operating points on the highway cycle . The size of the dots
+represents how often that the corresponding operating point has been chosen.
+Table 4: Summary of key performance indicators of the mixed H 2-HEV for
+various investigated driving missions. As S▲cannot be realized on the highway
+cycle , the metrics ” ∆Hadd
+2” and ” ∆H2” are calculated with respect to S■, which
+is denoted with the superscript ”■” in the corresponding columns.
+∆Hadd
+2∆H2 feo,S■
+x
+Urban cycle 2.2% 61.2% 99%
+Real driving cycle 5.8% 16.1% 96.6%
+Mountain cycle 5.9% 38.9% 98.6%
+Highway cycle 18.5%■-17%■71.6%
+Pareto-optimal trade-off between H 2consumption and NOeo
+x
+emissions can be achieved, solely by changing the distribution
+of the torque request between the vehicle’s power sources.
+Overall, the performance of three different hybridized pow-
+ertrain solutions, i.e., a series H 2-HEV , a parallel H 2-HEV ,
+and a mixed H 2-HEV , are compared to a base H 2-vehicle on
+the WLTC. The resulting Pareto-optimal H 2-NOeo
+xtrade-offs
+show two things: Firstly, all investigated H 2-HEVs greatly
+outperform the base H 2-vehicle. Secondly, the mixed H 2-HEV
+is the superior H 2-HEV architecture in both regards: H 2consumption and NOeo
+xemissions.
+To solidify the findings obtained on the WLTC, the perfor-
+mance potential of the mixed H 2-HEV is further investigated
+on a variety of different realistic driving missions. The
+mixed H 2-HEV effectively leverages both the parallel mode
+and the series mode to lower the H 2consumption and reach
+extremely low NOeo
+xemissions, respectively: To reduce the H 2
+consumption by increasing the drivetrain’s overall efficiency,
+the parallel mode is used. To achieve extremely low NOeo
+x
+emissions by decoupling the H 2ICE, which allows to run it
+in its most suitable operating point, the series mode is used.
+For a broad range of driving missions, the mixed H 2-HEV
+is able to decrease the engine-out NOeo
+xemissions by 90%,
+while, at the same time, decreasing the H 2consumption by
+over 16%, compared to the base H 2-vehicle. These significant
+emission reductions are possible without having to modify the
+exhaust-gas aftertreatment system, or the optimization of any
+of the individual drivetrain components, but solely by setting
+the EMS calibration accordingly.
+Further research could focus on the development of an
+online-capable control algorithm for the energy management
+of the investigated mixed H 2-HEV . The goal would be to reach
+close-to-optimal H 2consumption, while satisfying a NOeo
+x
+emission target. The technique of model predictive control
+could be used to calculate the optimal torque split in real-time.
+Another direction of research could be the development and
+inclusion of an additional dynamic NOeo
+xemissions model and
+the analysis of its influence on the H 2-NOeo
+xPareto front of
+the mixed H 2-HEV . Also, the reduced NOeo
+xemissions lead
+to changed requirements for the exhaust-gas aftertreatment
+system, creating an avenue for exploring the optimization of
+EMS calibration in conjunction with the design and operation
+of the exhaust gas aftertreatment system.
+Acknowledgment
+We thank Robert Bosch GmbH for supporting this project.
+References
+[1] D. Parra, L. Valverde, F. J. Pino, M. K. Patel, A review on the role, cost
+and value of hydrogen energy systems for deep decarbonisation, Renew-
+13
+able and Sustainable Energy Reviews 101 (2019) 279–294.
+[2] J. O. Abe, A. Popoola, E. Ajenifuja, O. M. Popoola, Hydrogen energy,
+economy and storage: Review and recommendation, International journal
+of hydrogen energy 44 (2019) 15072–15086.
+[3] P. Colbertaldo, S. B. Agustin, S. Campanari, J. Brouwer, Impact of
+hydrogen energy storage on California electric power system: Towards
+100% renewable electricity, International Journal of Hydrogen Energy 44
+(2019) 9558–9576.
+[4] I. E. A. (IEA), CO2 emissions in 2022, International Energy Agency
+(2022).
+[5] EPA, epa.gov, https://www.epa.gov/regulations-emissions-vehicles-
+and-engines/final-rule-revise-existing-national-ghg-emissions (2021).
+Accessed on June 08, 2023.
+[6] EU Regulation, Regulation (EU) 2019/631 of the European parliament
+and of the council of 17 April 2019 setting CO2 emission performance
+standards for new passenger cars and for new light commercial vehicles,
+and repealing Regulations (EC) no 443/2009 and (eu) no 510/2011, URL
+https://eur-lex. europa. eu/legalcontent/EN/TXT (2019).
+[7] T. Gersdorf, P. Hertzke, P. Schaufuss, S. Schenk, McKinsey electric vehi-
+cle index: Europe cushions a global plunge in EV sales, 2020.
+[8] Z. Du, C. Liu, J. Zhai, X. Guo, Y . Xiong, W. Su, G. He, A review of
+hydrogen purification technologies for fuel cell vehicles, Catalysts 11
+(2021) 393.
+[9] B. J. Shinde, K. Karunamurthy, Recent progress in hydrogen fuelled in-
+ternal combustion engine (H2ICE)–a comprehensive outlook, Materials
+Today: Proceedings 51 (2022) 1568–1579.
+[10] S. Falfari, G. Cazzoli, V . Mariani, G. M. Bianchi, Hydrogen application
+as a fuel in internal combustion engines, Energies 16 (2023) 2545.
+[11] A. Onorati, R. Payri, B. Vaglieco, A. Agarwal, C. Bae, G. Bruneaux,
+M. Canakci, M. Gavaises, M. G ¨unthner, C. Hasse, et al., The role of hy-
+drogen for future internal combustion engines, 2022.
+[12] Z. Stkepie ´n, A comprehensive overview of hydrogen-fueled internal com-
+bustion engines: achievements and future challenges, Energies 14 (2021)
+6504.
+[13] L. Rouleau, F. Duffour, B. Walter, R. Kumar, L. Nowak, Experimental and
+numerical investigation on hydrogen internal combustion engine, Techni-
+cal Report, SAE Technical Paper, 2021.
+[14] EU Regulation, Proposal for a regulation of the european parlia-
+ment and of the council on type-approval of motor vehicles and en-
+gines and of systems, components and separate technical units in-
+tended for such vehicles, with respect to their emissions and battery
+durability (Euro 7) and repealing Regulations (EC) No 715/2007 and
+(EC) No 595/2009, URL https://ec.europa.eu/transparency/documents-
+register/detail?ref=COM(2022)586&lang=en (2022).
+[15] C. White, R. Steeper, A. Lutz, The hydrogen-fueled internal combus-
+tion engine: a technical review, International journal of hydrogen energy
+(2006).
+[16] J. W. Heffel, NOx emission reduction in a hydrogen fueled internal com-
+bustion engine at 3000 rpm using exhaust gas recirculation, International
+Journal of Hydrogen Energy 28 (2003) 1285–1292.
+[17] J. W. Heffel, NOx emission and performance data for a hydrogen fueled
+internal combustion engine at 1500rpm using exhaust gas recirculation,
+International Journal of Hydrogen Energy 28 (2003) 901–908.
+[18] L.-z. Bao, B.-g. Sun, Q.-h. Luo, Experimental investigation of the achiev-
+ing methods and the working characteristics of a near-zero NOx emission
+turbocharged direct-injection hydrogen engine, Fuel 319 (2022) 123746.
+[19] P. Sementa, J. B. de Vargas Antolini, C. Tornatore, F. Catapano, B. M.
+Vaglieco, J. J. L. S ´anchez, Exploring the potentials of lean-burn hydro-
+gen SI engine compared to methane operation, International Journal of
+Hydrogen Energy 47 (2022) 25044–25056.
+[20] A. Sciarretta, L. Serrao, P. Dewangan, P. Tona, E. Bergshoeff, C. Bor-
+dons, L. Charmpa, P. Elbert, L. Eriksson, T. Hofman, et al., A control
+benchmark on the energy management of a plug-in hybrid electric vehi-
+cle, Control engineering practice 29 (2014) 287–298.
+[21] J. Ritzmann, A. Christon, M. Salazar, C. Onder, Fuel-optimal power split
+and gear selection strategies for a hybrid electric vehicle, Technical Re-
+port, SAE Technical Paper, 2019.
+[22] L. Serrao, S. Onori, A. Sciarretta, Y . Guezennec, G. Rizzoni, Optimal
+energy management of hybrid electric vehicles including battery aging,
+in: Proceedings of the 2011 American control conference, IEEE, 2011,
+pp. 2125–2130.[23] J. Ritzmann, O. Chinellato, R. Hutter, C. Onder, Optimal integrated emis-
+sion management through variable engine calibration, Energies 14 (2021)
+7606.
+[24] X. He, T. Maxwell, M. E. Parten, Development of a hybrid electric ve-
+hicle with a hydrogen-fueled IC engine, IEEE transactions on vehicular
+technology 55 (2006) 1693–1703.
+[25] A. K. Jaura, W. Ortmann, R. Stuntz, B. Natkin, T. Grabowski, Ford’s
+H2RV: An Industry First HEV Propelled with a H2 Fueled Engine-A Fuel
+Efficient and Clean Solution for Sustainable Mobility, Technical Report,
+SAE Technical Paper, 2004.
+[26] S. Beccari, On the use of a hydrogen-fueled engine in a hybrid electric
+vehicle, Applied Sciences 12 (2022) 12749.
+[27] ˇS. Kyjovsk `y, J. V ´avra, I. Bortel, R. Toman, Drive cycle simulation of light
+duty mild hybrid vehicles powered by hydrogen engine, International
+Journal of Hydrogen Energy 48 (2023) 16885–16896.
+[28] L. Guzzella, A. Sciarretta, et al., Vehicle propulsion systems, volume 3,
+Springer, 2013.
+[29] F. Widmer, A. Ritter, P. Duhr, C. H. Onder, Battery lifetime extension
+through optimal design and control of traction and heating systems in
+hybrid drivetrains, ETransportation 14 (2022) 100196.
+[30] W. B. Powell, Approximate Dynamic Programming: Solving the curses
+of dimensionality, volume 703, John Wiley & Sons, 2007.
+[31] S. Uebel, N. Murgovski, C. Tempelhahn, B. B ¨aker, Optimal energy man-
+agement and velocity control of hybrid electric vehicles, IEEE Transac-
+tions on Vehicular Technology 67 (2017) 327–337.
+[32] M. Behrisch, L. Bieker, J. Erdmann, D. Krajzewicz, Sumo–simulation of
+urban mobility: an overview, in: Proceedings of SIMUL 2011, The Third
+International Conference on Advances in System Simulation, ThinkMind,
+2011.
+14

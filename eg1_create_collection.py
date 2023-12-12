@@ -57,7 +57,7 @@ client.collections.delete("MultiModalCollection")
 multimodal = client.collections.create(
     name="MultiModalCollection",
     vectorizer_config=wvc.Configure.Vectorizer.multi2vec_clip(
-        image_fields="image"
+        image_fields=["image"]
     ),
     generative_config=generative,
     properties=[
@@ -65,6 +65,7 @@ multimodal = client.collections.create(
             name="text",
             data_type=wvc.DataType.TEXT,
             tokenization=wvc.Tokenization.FIELD,
+            skip_vectorization=True,
         ),
         wvc.Property(
             name="image",

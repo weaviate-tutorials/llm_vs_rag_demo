@@ -16,7 +16,7 @@ st.title("LLMs by themselves")
 selected_prompt = st.selectbox(label="Select a prompt", options=preset_prompts)
 
 if selected_prompt == "Custom":
-    prompt = st.text_input(label="Ask the LLM anything.", value="")
+    prompt = st.text_area(label="Ask the LLM anything.", value="", height=50)
 elif selected_prompt == "Select a prompt":
     prompt = ""
 else:

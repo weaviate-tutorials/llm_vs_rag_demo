@@ -3,11 +3,13 @@ import os
 
 preset_prompts = [
     "Select a prompt",
-    "Explain how an LLM works, in the style of ELI5, but in a very casual, extremely Australian voice.",
+    "Explain how a large language model works.",
+    "Explain how an LLM works, in a very casual, extremely Australian voice.",
     "Write a haiku about how a LLM works.",
+    "Write a short biography of JP Hwang, who is a an educator for Weaviate.",
+    "We did it! I won the county boxing championship! Provide key reasons for this triumph.",
     "Explain what the imagebind model is like I am five.",
     "What is hybrid search?",
-    "Write a short biography of JP Hwang, who is an educator for Weaviate.",
     "Custom"
 ]
 

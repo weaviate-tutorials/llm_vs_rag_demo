@@ -1,0 +1,987 @@
+
+arXiv:2309.17442v1  [eess.SY]  29 Sep 20231
+Powertrain Hybridization for Autonomous Vehicles
+Shima Nazari, Norma Gowans, and Mohammad Abtahi
+Department of Mechanical and Aerospace Engineering, UC Dav is, Davis, CA 95618 USA
+The powertrains of today’s hybrid electric vehicles (HEVs) are developed for human drivers and, therefore, may not be th e
+optimum choice for future Autonomous vehicles (A Vs), given that A Vs can accurately manipulate their velocity proﬁle to avoid
+unnecessary energy loss. In this work, we closely examine th e necessary degree of hybridization for A Vs compared to huma n
+drivers by deploying real-world urban driving proﬁles and g enerating equivalent A V drive cycles in a mixed autonomy sce nario. We
+solve the optimal energy management problem for HEVs with va rious motor sizes from the automotive market, and demonstra te
+that while human drivers typically require a motor size of ar ound 30 kW to fully beneﬁt from hybridization, A Vs can achiev e
+similar gains with only a 12 kW motor. This greater beneﬁt fro m a smaller motor size can be attributed to a more optimal torq ue
+request, allowing for higher gains from regenerative braki ng and a more efﬁcient engine operation. Furthermore, We inv estigate
+the beneﬁts of velocity smoothing for both traditional cars and HEVs and explore the role of different mechanisms contri buting to
+fuel consumption reduction. Our analysis reveals that velo city smoothing provides greater beneﬁts to HEVs equipped wi th small
+motors compared to non-hybrid vehicles and HEVs with larger motors.
+Index Terms —Autonomous vehicle, hybrid electric vehicle, fuel econom y, powertrain sizing
+I. I NTRODUCTION
+VEHICLE electriﬁcation is seen as the most promising
+pathway towards reducing the carbon emissions of trans-
+portation sector. While battery technology continues to ev olve,
+Hybrid Electric Vehicles (HEVs) are a suitable short-term
+and mid-term solution that integrate the beneﬁts of traditi onal
+Internal Combustion Engine Vehicles (ICEVs) with Electric
+Vehicles (EVs). Hybridization effectively reduces a vehic le’s
+fuel consumption through several mechanisms: operating th e
+engine at a higher efﬁciency, recovering the vehicle’s kine tic
+energy through regenerative braking instead of relying on
+friction brakes, and shutting down the engine when idling.
+Meanwhile, over the past decade a signiﬁcant amount of
+research has been dedicated to vehicle automation. Automat ed
+Vehicles (A Vs) offer numerous beneﬁts to the society, such
+as improved safety, mobility, and comfort [1]. A Vs enable
+a better planning for transportation resources and hence ca n
+reduce transportation costs [2]. Moreover, removing the dr iver
+from the vehicle control loop allows an enhanced management
+of the vehicle to encode efﬁcient driving styles known as
+eco-driving [3], [4]. Eco-driving involves manipulating t he
+vehicle’s velocity proﬁle for a lower fuel consumption [5].
+While these driving practices can be followed by human
+drivers as well, [6], the implementation is more likely to
+be effective when integrated with the longitudinal motion
+controller of an A V or in an Advanced Driver Assistance
+System (ADAS) such as an Adaptive Cruise Control (ACC)
+[7], [8].
+The effectiveness of hybridization in fuel consumption
+reduction is substantiated in the literature and in practic e [9],
+[10], and the capability of vehicle velocity optimization a nd
+eco-driving for reducing energy consumption has been studi ed
+in the past for traditional ICEVs [11], HEVs, [12], [13], and
+EVs [14], [15]. For example, Kato et al. [11] showed that
+eco-driving can effectively improve the fuel economy of all
+mentioned types of vehicles through chassis dynamometerexperiments. In another work, Manzie et al. [16] compared
+the fuel economy gains of vehicle hybridization versus velo c-
+ity smoothing, achieved by trafﬁc information preview over
+standard urban drive cycles. They found that the fuel econom y
+improvement of a traditional ICEV from velocity smoothing
+with 60 seconds of preview is comparable to full vehicle
+hybridization. This result is not surprising because power train
+hybridization and velocity optimization work in similar wa ys
+to improve fuel economy; for example, they both avoid energy
+loss in friction brakes by regenerative braking (in HEVs) or
+less/smoother braking (for eco-driving).
+Given this analogy in concept, the fuel consumption re-
+duction from these two approaches is not accumulative, yet,
+the synergy between powertrain hybridization and velocity
+optimization, achieved by automation and ADAS, is not fully
+understood. This work takes a closer look at this connection by
+comparing the fuel economy of a traditional ICEV and HEVs
+with human drivers, to the fuel economy of A Vs with the same
+powertrains but with optimized velocity proﬁles. An initia l
+study [17] showed that low-voltage 48 V systems have the
+potential for signiﬁcant fuel consumption reduction if cou pled
+with eco-driving over standard EPA cycles. This work expand s
+the prior study by including real-world urban driving proﬁl es
+and by considering the existing levels of hybridization in t he
+automotive market. We retroﬁtted a Ford Escape powertrain
+with different electric motors in a P2 parallel hybrid struc ture
+to generate comparable HEV powertrains for this study. We
+selected the parallel architecture because it is the simple st
+and cheapest type of HEV , and existing ICEVs can easily
+be retroﬁtted to a parallel HEV by coupling a motor with
+the engine crankshaft. Note that the motor sizing problem fo r
+parallel HEVs with human drivers is studied in the past [9],
+[18]. Nevertheless, this work, for the ﬁrst time, investiga tes
+the necessary degree of hybridization for automated vehicl es
+in a mixed autonomy scenario.
+The true optimum fuel economy for HEVs is achieved by
+co-optimization of the power split ratio and vehicle accele ra-
+2
+Fig. 1. Schematic view of the parallel hybrid vehicle powert rain.
+tion [19]. However, the co-optimization problem suffers fr om
+the curse of dimensionality and thus is computationally exp en-
+sive, such that iterative approaches are usually adopted to ﬁnd
+the global optimum solution [20], [21], [22]. In this work, w e
+adopted a sequential optimization method in which the vehic le
+velocity proﬁle in a presumed autonomous driving scenario i s
+optimized ﬁrst, and in the next step, the optimal energy man-
+agement for the powertrain is solved as shown in Fig. 1. This
+approach, although sub-optimal, is computationally tract able
+and shown to be an effective and practical approach [23],
+especially for analyses with a large number of studied drive
+cycles such as here. We used Dynamic Programming (DP)
+to solve both the velocity proﬁle optimization and the energ y
+management problem. The optimal fuel economy numbers and
+powertrain parameters for different degrees of hybridizat ion
+with Human Driver (HD) and A V are compared against each
+other to understand the relation between hybridization, ve hicle
+automation, and fuel economy.
+The reminder of this paper is organized as follows, ﬁrst the
+vehicle and the studied powertrains are introduced in Secti on
+II, followed by the real-world driving proﬁles in Section II I.
+Section IV formulates the optimization problem for buildin g
+the A V drive cycles in a car-following scenario, and Section
+V deﬁnes the energy management problem. The vehicle and
+powertrain models used in this part are given in the Appendix .
+The results are discussed in Section VI and the paper ends wit h
+concluding remarks.
+II. S TUDIED VEHICLE AND POWERTRAINS
+The baseline vehicle is a Ford Escape MY2015 with a
+1.6L downsized turbocharged engine and a 6-speed automatic
+transmission. The data on the vehicle parameters and fuel
+consumption map is published elsewhere [24]. In this work
+we retroﬁtted this powertrain with a clutch and an electric
+motor in a P2 parallel hybrid structure, in which the motor is
+mounted between the engine and the gearbox and the clutch
+can decouple the engine from the rest of the drivetrain. A
+schematic of the resulting hybrid powertrain is shown in Fig .
+1. Note that the boosted downsized engine is a suitable choic e
+for this study because its efﬁciency sweet spot is wide and
+lies within the medium torque range, rather than the high
+torque area in non-boosted engines. Therefore, over-sizin g ofTABLE I
+TECHNICAL DETAILS FOR THE CONSIDERED ELECTRIC MOTORS .
+Motor Type Peak Power [kW] Peak Motor-Inverter Efﬁciency
+1 IPM 5 82%
+2 IPM 8 82%
+3 PMSM 12 92%
+4 PMSM 20 92%
+5 PMSM 30 92%
+6 PMSM 40 92%
+the hybrid powertrains, due to using the same engine for all
+studied cases, will not be a signiﬁcant issue as shown later i n
+this work.
+Four electric motors, corresponding to various degrees of
+hybridization and found in published literature, were sele cted
+for this study. The 8 kW motor is from the Hyundai Sonata
+MY2012 starter-generator [25], the 12 kW motor is from the
+Honda Accord MY2005 [26], the 30 kW motor is from the
+Hyundai Sonata MY2011 [27], and the last motor is from
+the Toyota Prius MY2010 [28]. It is stated that this motor
+produces 60 kW of power, however, the available peak torque
+curve used in this work generates around 40 kW maximum and
+therefore, we will refer to this motor as the 40 kW motor. Tabl e
+I provides more information on the motors. The most relevant
+technical speciﬁcations are the peak torque curve and the
+motor-inverter combined electro-mechanical efﬁciency, b oth
+of which are given in Fig. 2. Two additional motor sizes are
+considered in this study. A 5 kW motor is realized by scaling
+down the 8 kW motor map and a 20 kW motor is built by
+scaling up the 12 kW motor map. In total, 6 different hybrid
+powertrains were considered in this study. A 1.2 kWh Li-ion
+battery is assumed for all hybrid vehicles.
+50 505050
+68686868
+747474
+7878
+808182
+0 5000 10000010203040
+(a)70707070
+767676
+84 8484
+868686
+88
+8888
+9090
+9191
+92
+0 1000 2000 3000 4000 5000020406080100120140
+(b)
+70 707070
+80 808080
+88
+888888
+909090
+919191
+9292
+0 2000 4000 6000050100150200
+(c)70 707070
+80 808080
+858585
+88
+888888
+9090
+9191
+9292
+0 2000 4000 6000050100150200250300
+(d)
+Fig. 2. Combined motor-inverter efﬁciency map and peak torq ue curve for
+(a) 8 kW motor from [25], (b) 12 kW motor from [26], (c) 30 kW mot or
+from [27], (d) 40 kW motor from [28].
+III. R EAL-WORLD DRIVING PROFILES
+In order to study the beneﬁts of vehicle hybridization and
+automation and the synergy between these two in realistic
+3
+(a) Velocity
+(b) Trip duration
+Fig. 3. Statistics of the considered real-world driving pro ﬁles, the line in the
+center of the box shows the median value and the edges of the bo x show 25%
+and 75% of data for (a) velocity, (b) trip duration.
+conditions, this study adopted real-world urban driving pr oﬁles
+available for public use by Smith and Blair [29], [30]. The
+database provided the dates, vehicle latitude and longitud e
+coordinates, and vehicle speed with a 1-second time resolut ion.
+270 cycles from ﬁve drivers were chosen for this study. Fig.
+3 provides statistics on the cycle length and speed for each
+driver. The average velocity from EPA standard cycles, FTP7 5,
+HWFET, and US06, are also shown. As seen most cycles have
+an average velocity of less than 40 [km /h] and the trip duration
+is less than 20 minutes. Fig. 4(a) and 4(b) show the statistic s
+on the cycle acceleration and deceleration for each driver
+as a measure of driving aggressiveness. The corresponding
+values for standard EPA cycles are also shown. Driver 2 has
+the largest average acceleration and absolute deceleratio n, and
+Driver 5 has the lowest values. As seen, most drivers in terms
+of average velocity and aggressiveness are close to the FTP7 5
+cycle. Examples of the speed proﬁle for these cycles are give n
+in Fig. 5(a), 5(b), and 6(a).
+IV. D RIVE CYCLES FOR AUTONOMOUS CARS
+To compare the fuel economy of human-driven cars with
+A Vs, an equivalent autonomous vehicle driving proﬁle must
+be built for each human-driven cycle. We adopted the method
+introduced by Prakash et. al [31]. This method ﬁrst ﬁnds the
+velocity proﬁle of a hypothetical lead vehicle for a human-
+driven speed proﬁle by inverting the Intelligent Driver Mod el
+(IDM) [32]. In the next step, an optimization problem is
+solved to ﬁnd the velocity proﬁle of an autonomous vehicle
+that is following the same hypothetical lead vehicle. This
+approach minimizes the second norm of acceleration while
+keeping a safe distance from the lead vehicle that prohibits
+other vehicles’ cut-in. This problem is formulated as,minN
+∑
+1||a(k)||2
+2 (1)
+subject to
+x(k+1)=x(k)+v(k)Ts+1
+2a(k)T2
+s (2a)
+v(k+1)=v(k)+a(k)Ts (2b)
+amin≤a(k)≤amax(2c)
+vmin≤v(k)≤vmax(2d)
+x(k)min≤x(k)≤x(k)max(2e)
+Equations (2a) and (2b) portray the vehicle longitudinal ki ne-
+matics, which is a second-order Linear Time-Invariant (LTI )
+model with acceleration, a, as system input and position, x, and
+velocity, v, as system states. The problem sampling time, Ts,
+is selected equal to 1 second. The velocity and acceleration
+of the A V are limited by Equations (2c) and (2d), and the
+distance from the hypothetical lead vehicle is regulated by the
+constraint (2e) at every moment to satisfy the above mention ed
+criteria. For more information on this method please see
+[31]. A MATLAB-based Dynamic Programming (DP) solver
+[33] was used to ﬁnd the equivalent autonomous vehicle
+proﬁle for each of the considered cycles. Figures 4(a) to 4(b )
+compare the statistics of the A V cycles to human-driven cycl es.
+As expected, the A V cycles have lower average acceleration
+and absolute deceleration, pointing to the smoother veloci ty
+proﬁles followed by autonomous vehicles. Fig. 5(a) and 5(b)
+compare two of the real-world cycles to their A V-driven
+proﬁles. As seen the velocity proﬁles are only slightly modi ﬁed
+for a smoother following.
+V. O PTIMAL ENERGY MANAGEMENT
+The Energy Management System (EMS) of an HEV must
+choose the share of the ICE and the electric motor in providin g
+the requested torque by the driver/motion controller. Rule -
+based and optimization-based controllers are two main cat-
+egories of EMS [34]. Rule-based methods are simple and can
+be implemented in real-time, but they do not utilize knowled ge
+of the drive cycle or a trafﬁc preview, and hence, they
+produce sub-optimal results. Optimization-based approac hes
+use physics-based models to optimize a performance metric,
+which is usually fuel consumption. Equivalent Consumption
+Minimization Strategy (ECMS) [35], Model Predictive Contr ol
+(MPC) [36] and DP [37] are among the most widely used
+optimization approaches for energy management of HEVs.
+Among these approaches, DP is usually used with a full drive
+cycle preview to produce a globally optimum solution. Such
+DP-based EMS is not practical for real-world implementatio n
+due to the high computational cost and lack of access to
+the entire vehicle velocity proﬁle. However, it is a suitabl e
+approach to compare the relative effectiveness of differen t
+technologies in reducing the fuel consumption of a vehicle,
+such as in this study.
+Backward simulation is employed in this study to model the
+HEV powertrain and driveline, with the detailed informatio n
+provided in the Appendix. In this method, the velocity proﬁl e
+4
+(a) acceleration
+ (b) deceleration
+Fig. 4. Real-world driving proﬁles (grey) and optimized A V c ycles (red), (a) average acceleration distributions, (b) a verage absolute deceleration distributions
+0 100 200 300 400 500 600 700 800 900 100001020
+0 100 200 300 400 500 600 700 800 900 1000-202
+(a)
+0 100 200 300 400 500 600 700 8000102030
+0 100 200 300 400 500 600 700 800-202
+(b)
+Fig. 5. Examples of studied read-world cycles and modiﬁed cy cles for
+autonomous car following, (a) a cycle from driver 3, (b) a cyc le from driver
+2.
+is an input to the model, and the wheels torque and rotational
+speed, τwandωwrespectively (see Fig. 1), are computed using
+the given velocity and vehicle parameters. These values are
+then back propagated along the driveline through the gearbo x
+and torque converter to compute the torque and rotational
+speed on the motor shaft and the engine shaft. Eventually,
+the battery current, Ib, and State of Charge (SoC), ζ, are
+computed using the motor torque, τm, motor speed, ωm, and
+the motor efﬁciency. An Open Circuit V oltage model with a
+single Resistor (OCV-R) is used to model the battery. The
+problem inputs are the motor torque, gear shift command, ug,
+and engine on/off command, ue, and the modeled states are
+the battery state of charge, the gear number, ng, and engineon/off state xe. The fuel consumption minimization problem
+is formulated as,
+min{
+N
+∑
+k=1(
+˙mf(k)Ts+α⏐⏐ng(k)−ng(k−1)⏐⏐
++β(
+max(
+xe(k−1),0)))}
+(3)
+Subject to constraints
+ζ(k+1)=ζ(k)−Ib(k)
+3600 CnTs (4a)
+ng(k)=ug(k)+ng(k−1) (4b)
+xe(k)=ue(k) (4c)
+ζmin≤ζ(k)≤ζmax(4d)
+Imin
+b≤Ib(k)≤Imax
+b (4e)
+τmin
+m≤τm(k)≤τmax
+m (4f)
+τmin
+e≤τe(k)≤τmax
+e (4g)
+ωmin
+e≤ωe(k)≤ωmax
+e (4h)
+ug(k)∈{− 1,0,1} (4i)
+ng(k)∈{1,2,..., 6} (4j)
+ue(k)∈{0,1} (4k)
+(4l)
+where ˙ mfis the fuel ﬂow rate that is found using the engine
+fuel consumption map based on engine torque, τe, and engine
+speed, ωe.kis the problem step time, and Tsis the sample
+time equal to 1 second. The coefﬁcient αpenalizes gear shifts
+to avoid frequent gear shifts and produce more realistic shi ft
+scenarios. The coefﬁcient βpenalizes the engine’s cranking
+for start-stop. The constraint (4a) represents the state of charge
+dynamics, in which Cnis the battery capacity. The equation
+(4b) shows the gear change, and (4c) determines the engine
+on/off state. The inequality constraints (4d), (4e), (4f), (4g),
+(4h) respectively curb the battery state of charge, current ,
+motor torque, and engine torque and speed between their
+minimum and maximum values. The constraint (4i) restricts
+gear shifts to a single upshift and downshift, (4j) conﬁnes t he
+gear number to 1 to 6, and (4k) permits turning the engine on
+and off.
+5
+0 100 200 300 400 5000204060
+0 100 200 300 400 500-2000200400
+0 100 200 300 400 5000246
+0 100 200 300 400 500 600455055
+(a) Human driven cycle0 100 200 300 400 5000204060
+0 100 200 300 400 500-2000200400
+0 100 200 300 400 5000246
+0 100 200 300 400 500 600455055
+(b) A V cycle
+Fig. 6. An example of energy management results for HEV with a 30 kW motor for (a) a human-driven cycle and (b) correspondin g A V cycle. The top plots
+are the vehicle velocity, and the second plots show the torqu e on the torque converter input shaft ( τcp), engine torque ( τe), and motor torque ( τm). The third
+plots represent the gear number ( ng) and engine on/off command ( ue), and the bottom plots are the battery state of charge.
+The global optimal energy management problem of (3) is
+solved over all cycles. An example of the results with a 30 kW
+motor for a human-driven cycle is shown in Fig. 6(a), while th e
+corresponding A V cycle is shown in Fig. 6(b). The top subplot s
+show the vehicle velocity proﬁle. The second subplots show
+the torque request on the torque converter input shaft ( τcp, see
+Fig. 1), the engine torque, and the motor torque. The third
+subplots show the gear number and engine on/off command,
+and the last subplots represent the battery state of charge
+during the cycle. As expected, the DP-based optimal EMS
+splits the requested torque between the engine and the motor
+to minimize the deﬁned performance metric. Furthermore, th e
+engine is turned off when the vehicle is stopped and sometime s
+when the vehicle is in motion to avoid inefﬁcient engine
+operation. The next section discusses fuel consumption res ults
+in detail.
+VI. D ISCUSSION
+A. Fuel Consumption Improvement with Powertrain Hy-
+bridization
+The distribution of fuel consumption reduction from power-
+train hybridization along with its mean and standard deviat ion
+(Std) for different motor sizes is presented in Fig. 7 for a
+human driver, and in Fig. 8 for A V cycles. The subplots from
+the left are respectively for 5 kW, 8 kW, 12 kW, 20 kW, 30 kW,and 40 kW motors. The fuel consumption reduction, ∆FCh, is
+computed as
+∆FCh=FEhev−FEICEV
+FEICEV×100 (5)
+where FE hevis the fuel economy of HEV with the given motor
+size and FE ICEV is the fuel economy of the baseline ICEV ,
+both in [l/100km]. As seen, hybridization effectively redu ces
+the fuel consumption for both human drivers and A Vs across
+all motor sizes. However, this reduction is larger for human
+drivers across all motor sizes. For human drivers, hybridiz ation
+decreases the fuel consumption by 28.9%, 31.3%, 37.5%,
+40.9%, 43.4%, and 43.9% on average with respectively 5 kW,
+8 kW, 12 kW, 20 kW, 30 kW, and 40 kW motors, and the
+corresponding reductions for A V are 31.7%, 33.1%, 38.2%,
+38.7%, 39.7%, and 39.6%.
+Fig. 9(a) shows ∆FChversus motor size and Fig. 9(b) shows
+the fuel economy versus motor size for each driver. The black
+lines represent the average values for the human driver, and
+the red lines show the average number for the A V cycles
+constructed from the same human driver cycles, therefore th e
+same trafﬁc condition. The thin grey and pink lines in the
+background show the results for individual cycles, respect ively
+for the human driver and A V . These results show that for
+human drivers, using a larger electric motor results in a hig her
+decrease in fuel consumption for all considered drivers and
+motor sizes up to 30 kW. For example, using a 30 kW motor
+6
+Fig. 7. The statistics of fuel consumption reduction due to t he powertrain hybridization for different motors sizes for a human driver. The fuel consumption
+change is computed relative to the baseline ICEV .
+Fig. 8. The statistics of fuel consumption reduction due to p owertrain hybridization for different motor sizes for auto nomous vehicles. The fuel consumption
+change is computed relative to the baseline ICEV .
+instead of an 8 kW motor reduces the FC by around 10%-14%
+on average for different drivers, or upgrading a 12 kW motor
+to a 30 kW motor reduces the FC by 4%-7% on average. In
+contrast, it is observed that for A V cycles, the FC decrease i s
+small for motor sizes larger than 12 kW, such that increasing
+the motor size from 12 kW to 40 kW reduces the FC by 1.4%
+on average. These results indicate that a 12 kW motor, which
+can be realized with a 48 V system, is the suitable motor size
+for an autonomous vehicle in the considered mixed trafﬁc cit y
+driving condition because it can produce almost all the fuel
+economy beneﬁts of a full-size hybrid powertrain. For human -
+driven cycles, the 30 kW motor seems to be a suitable choice
+because moving towards a larger motor size, i.e. 40 kW motor,
+results in an incremental FC decrease of 0.5%. The underlyin g
+reasons for this difference are discussed in detail in Secti on
+VI-C.
+B. Fuel Consumption Reduction with Velocity Smoothing
+In this section, we examine the beneﬁts of velocity smooth-
+ing enabled with vehicle automation in FC reduction of the
+baseline ICEV and different HEVs. Fig. 10 shows the average
+FC gain, ∆FCs, versus motor size for different drivers, where
+∆FCsis deﬁned as follows
+∆FCs=FEHD−FEA V
+FEHD×100 (6)
+in which FE HDis the average fuel economy of the human
+driver on all cycles and FE A Vis the average fuel economy
+of A V on the equivalent A V cycles that were realized byoptimization (1). The ﬁrst marker on the left corresponds to
+the baseline ICEV . Velocity smoothing reduces the FC of
+the baseline ICEV by 11%-17% and of the HEVs by 5%-
+22% across all drivers, however, there is not a monotonous
+relationship between ∆FCsand motor size. As expected,
+the FC gain for HEVs with large motors is minimum, as
+hybridization and velocity smoothing work in similar ways t o
+improve the fuel economy of a vehicle. Yet, interestingly, t he
+velocity smoothing beneﬁts are higher for HEVs with small
+motors compared to the baseline ICEV . The reason is that
+velocity smoothing reduces the acceleration and decelerat ion
+of the vehicle such that a smaller motor size will be capable o f
+recuperating a larger portion of the otherwise wasted vehic le
+kinetic energy, and therefore increases the effectiveness of
+these small hybrids. It is also observed that Drivers 2, 3, an d
+4 that have higher average acceleration and deceleration an d
+therefore, a more aggressive driving style, beneﬁt more fro m
+velocity smoothing across all motor sizes compared to Drive r
+1 and 5. This observation conﬁrms the fact that an aggressive
+driving style is detrimental to fuel economy, even with a ful l
+hybrid powertrain that has a high capacity for regenerative
+braking.
+C. Categorizing Fuel Consumption Gain
+The results presented in previous parts indicate that even
+with a small electric motor, the FC reduction is signiﬁcant o n
+most of the considered cycles. For example, with a human
+driver more than 25% FC reduction is achieved on 70% of
+the cycles with a 5 kW motor, and on 91% of the cycles with
+7
+10 20 30 402025303540455055
+Driver 1
+10 20 30 40Driver 2Driver 2
+10 20 30 40Driver 3Driver 3
+10 20 30 40Driver 4Driver 4
+10 20 30 40Driver 5
+(a) Fuel Consumption Reduction
+0 10 20 30 40246810
+Driver 1
+0 10 20 30 40Driver 2
+0 10 20 30 40Driver 3
+0 10 20 30 40Driver 4
+0 10 20 30 40Driver 5
+(b) Fuel Economy
+Fig. 9. (a) Fuel consumption reduction from the powertrain h ybridization (b) and absolute fuel economy numbers for indi vidual drivers. The faded grey and
+pink lines show drive cycles and the bold colors show the aver age values.
+0 10 20 30 4051015202530
+Fig. 10. Fuel consumption reduction from velocity smoothin g for ICEV and
+HEVS.
+a 12 kW motor. Similarly, for an A V the same FC reduction
+is gained on 75% of the cycles with a 5 kW motor and on
+88% of the cycles with a 12 kW motor. Hybridization reduces
+the fuel consumption of a vehicle through three main means.
+First, regenerative braking recovers part of the vehicle’s kinetic
+energy during braking events by operating the motor as a
+generator and storing the recuperated energy in the battery ,
+which will be used for propulsion or powering auxiliaries
+later. Second, it turns the engine off when the vehicle is not
+in motion to avoid extra fuel consumption during idling, and
+ﬁnally, engine operating points are shifted to higher efﬁci ency
+points by ﬁnding the optimum balance between motor torque
+and engine torque. It is understood that FC reduction in
+practice will be lower than the numbers generated with DP,
+mainly due to the sub-optimality of the EMS and the lack-5 0 5 10 15 20 25 30 35 40 4551015202530
+(a) FC reduction by source
+-5 0 5 10 15 20 25 30 35 40 45250260270280290300310
+(b) Engine Average BSFC
+Fig. 11. (a) Fuel consumption reduction by source, and (b) en gine average
+Brake Speciﬁc Fuel Consumption (BSFC). The numbers are the a verage values
+over all considered cycles.
+of a full driving proﬁle preview. Still, given these results , it
+8
+is predicted that the FC gain in the studied scenarios will
+be substantial, because the urban driving cycles studied he re,
+such as the examples shown in Fig. 5(a) and 5(b), include
+many braking and stopping instances, which allow the hybrid
+powertrain to effectively reduce FC on these cycles. In this
+section, the share of each of these mechanisms in FC reductio n
+for both the human driver and the A V is computed.
+The recovered energy during regenerative braking events,
+Ergn, is computed as
+Ergn=N
+∑
+k=1(
+(Pm(k)+Pe(k))ηm(k)Ts)
+Pw(k),Pm(k)<0(7)
+where Pwis the wheel power, Pmis the motor power, and Pe
+is the engine power. This equation computes the amount of
+electrical energy that the motor is recuperated during vehi cle
+braking instances ( Pw(k)<0 and Pm<0) from regenerative
+braking. The reason that the engine power appears in this
+equation is that simultaneous generation from the engine an d
+regenerative braking is allowed by our EMS formulation. In
+the next step, the equivalent saved fuel due to regenerative
+braking is calculated using the battery average round trip
+efﬁciency, ¯ηb, the motor motoring average efﬁciency, ¯ηm
+m, and
+the engine average fuel rate to mechanical power efﬁciency,
+¯ηein kJ per gram of burnt fuel, [kJ/g], as
+∆FCrgn=¯ηm
+m¯ηbErgn
+¯ηe(8)
+the values of ¯ηb,¯ηm
+m,¯ηeare calculated for each cycle. For
+example
+¯ηe=∑N
+k=1(
+Pe(k)Ts)
+∑N
+k=1(
+˙mf(k)Ts) (9)
+The FC reduction due to start-stop, ∆FCst/sp, is computed
+by integrating the saved fuel due to turning the engine off
+during vehicle stops, ∑(
+∆˙ mf(k)Ts)
+v(k),ue(k)=0, minus the fuel
+and energy penalty for starting the engine, as follows
+∆FCst/sp=∑(
+∆˙ mf(k)Ts)
+v(k),ue(k)=0−nst/sp(β+Pst/sp
+¯ηg
+m¯ηb¯ηe)
+(10)
+in which nst/spis the number of start-stops over a cycle, β
+is the fuel penalty for each start, Pst/spis the electric energy
+penalty for each vehicle start, and ¯ηg
+mis the average motor
+efﬁciency during generation ( Pm<0) over the cycle. Note that
+with our EMS formulation, the engine can turn off when the
+vehicle is in motion too. In this study, fuel saving during su ch
+events is categorized as engine operating point optimizati on.
+After computing the fuel saving due to regenerative braking
+and start-stop, it is assumed that the remaining FC reductio n
+is entirely due to engine operating point optimization.
+Fig. 11(a) shows the ∆FC from each source, averaged over
+all studied cycles. The solid lines show the results for the
+human drivers and the dashed lines represent A V . The black
+lines show the FC savings from start/stop, which is around 8%
+for human drivers and around 7.8% for A V . The reason for the
+slightly lower savings for A V is that the stop time is reduced bya small amount for A V cycles due to the velocity smoothing.
+The red lines show the FC beneﬁt from regenerative braking,
+the value of which for a human driver varies from 8.1% for a
+5 kW motor to 25.7% for a 40 kW motor, and for A V changes
+from 7.6% for a 5 kW motor to 16.8% for a 40 kW motor.
+The reason for this difference is that with velocity smoothi ng
+less energy is available for recuperation during braking ev ents
+of A V . Finally, the green lines represent the saved fuel due
+to optimizing the engine operating point. Two trends can be
+observed here. First, the FC beneﬁt from engine optimizatio n
+is larger for the A V across all motor sizes. Second, this bene ﬁt
+becomes smaller for larger motor sizes. The average Brake
+Speciﬁc Fuel Consumption (BSFC) of the engine, shown in
+Fig. 11(b), conﬁrms these trends. It can be inferred that the
+velocity smoothing enabled by vehicle automation allows th e
+engine to operate at a higher efﬁciency, the trend that was al so
+observed in the initial study [17]. The reason for the higher
+average engine BSFC with a larger motor can be tracked
+to the sizing problem because the assumed engine will be
+relatively oversized for HEV powertrains with a large motor .
+Nevertheless, this effect inﬂuences the FC numbers by at mos t
+3% for human drivers and by 2% for A V cycles, which are
+relatively small. On the other hand, using the same engine
+across all studied powertrains allowed us to simplify and
+reduce the study variables. The efﬁciency map of the used
+engine is published elsewhere [38] and has a relatively larg e
+efﬁciency sweet spot in medium torque regions. This quality
+allowed us to use the same engine across different HEVs with
+minimum FC penalty. Using the total FC gain from start-stop
+and regenerative braking, as a new measure to determine the
+suitable motor size for A Vs, still, the 12 kW motor is the
+correct choice since moving from a 12 kW to 40 kW motor
+only gives a 1.8% higher fuel saving from these two sources
+for an A V .
+Fig. 12. The fuel consumption gain from regenerative brakin g versus average
+absolute deceleration of the cycle. Blue circles show HEV wi th an 8 kW motor
+and human driver, red circles show HEV with an 8 kW motor and A V , green
+triangles represent HEV with a 40 kW motor and human driver, a nd purple
+triangles indicate HEV with a 40 kW motor and A V . The average n umbers
+for Driver 2 (D2) and Driver 5 (D5) are also shown.
+The prior results showed that the main mechanism that
+9
+allows A Vs to use a smaller motor compared to human drivers
+is the lower regenerative braking requirements. In this par t, we
+take a closer look into this synergy. Fig. 12 shows the FC gain
+from regenerative braking versus cycle average decelerati on.
+The results for the 8 kW motor are shown with circle markers,
+in blue for human driver, and in red for A V . The numbers
+for the 40 kW motor are shown with triangle markers, in
+green for human driver, and in purple for A V . In each case,
+the dashed line with the same color is the linear ﬁt to the
+results. The average numbers for Driver 2 (D2), as the most
+aggressive driver, and Driver 5 (D5), as the least aggressiv e
+driver, is shown respectively with plus and star markers. As
+seen all lines ﬁtted to the results have positive slope, mean ing
+that a higher fuel saving is possible on cycles with a higher
+deceleration rate and this relationship becomes more stric tly
+positive with a larger motor. Consequently, as seen Driver 2
+which has a larger average deceleration beneﬁts more from
+the powertrain hybridization. It is also observed that A V ca ses
+on average get a higher FC gain compared to the human-
+driven cycles. This difference is negligible for the 40 kW
+motor case, but more evident for the 8 kW motor. It can be
+concluded that the simple velocity smoothing adopted here
+allows recuperating a larger part of vehicle kinetic energy
+compared to a cycle with the same average deceleration but
+with a human driver, and thus velocity smoothing allows us
+to take advantage of vehicle hybridization even more.
+VII. C ONCLUSION
+This work investigated the synergy between velocity op-
+timization, enabled by automated driving, and powertrain
+hybridization to determine the necessary degree of hybridi za-
+tion for future A Vs. We adopted real-world urban driving
+proﬁles and computed the corresponding cycles for an A V
+navigating through the same trafﬁc conditions. The global
+optimum energy management problem for a parallel hybrid
+powertrain was solved with different motor sizes and over
+various human-driven and A V cycles. The results showed that
+while hybridization will effectively reduce fuel consumpt ion
+for both A Vs and human drivers, A Vs need signiﬁcantly
+smaller motors to obtain the full beneﬁts of electriﬁcation .
+Although a 30 kW motor was identiﬁed as the suitable motor
+size for human drivers, the simulations showed that an A V
+needs only a 12 kW motor to get almost the maximum gains.
+A closer look into the share of different mechanisms in fuel
+consumption reduction demonstrated that the employed velo c-
+ity proﬁle optimization reduces the average and distributi on of
+vehicle acceleration/deceleration towards higher effect iveness
+of regenerative braking, and at the same time operates the
+engine at a higher average efﬁciency. These ﬁndings indicat e
+that future autonomous vehicles can proﬁt from hybridizati on
+with small electric motors that can be realized with low-
+voltage systems, which are cheap and subject to fewer safety
+measures compared to high-voltage systems.
+This work also examined the advantages of velocity smooth-
+ing for the baseline ICEV and HEVs with different motor
+sizes and showed that velocity smoothing beneﬁts HEVs with
+small motor sizes, such as a 5 kW or 8 kW motor more thantraditional ICEVs or HEVs with larger motors. Finally, in th is
+study, we aimed at simulating A Vs in the same trafﬁc condi-
+tions as human drivers, which represents a mixed autonomy
+situation. Therefore, a future research direction could be to
+study the optimum motor size in a full autonomy scenario,
+where there is a larger control over the vehicle velocity and
+more smoothing is possible.
+REFERENCES
+[1] S. Pettigrew, Z. Talati, and R. Norman, “The health beneﬁ ts of
+autonomous vehicles: Public awareness and receptivity in a ustralia,”
+Australian and New Zealand journal of public health , vol. 42, no. 5,
+pp. 480–483, 2018.
+[2] T. Litman, “Autonomous vehicle implementation predict ions: Implica-
+tions for transport planning,” 2020.
+[3] M. Barth and K. Boriboonsomsin, “Energy and emissions im pacts of
+a freeway-based dynamic eco-driving system,” Transportation Research
+Part D: Transport and Environment , vol. 14, no. 6, pp. 400–410, 2009.
+[4] C. Vagg, C. J. Brace, D. Hari, S. Akehurst, J. Poxon, and L. Ash,
+“Development and ﬁeld trial of a driver assistance system to encourage
+eco-driving in light commercial vehicle ﬂeets,” IEEE Transactions on
+Intelligent Transportation Systems , vol. 14, no. 2, pp. 796–805, 2013.
+[5] Y . Huang, E. C. Ng, J. L. Zhou, N. C. Surawski, E. F. Chan, an d
+G. Hong, “Eco-driving technology for sustainable road tran sport: A
+review,” Renewable and Sustainable Energy Reviews , vol. 93, pp. 596–
+609, 2018.
+[6] C. Andrieu and G. Saint Pierre, “Comparing effects of eco -driving
+training and simple advices on driving behavior,” Procedia-Social and
+Behavioral Sciences , vol. 54, pp. 211–220, 2012.
+[7] S. Li, K. Li, J. Wang, L. Zhang, X. Lian, H. Ukawa, and D. Bai ,
+“Mpc based vehicular following control considering both fu el economy
+and tracking capability,” in 2008 IEEE vehicle power and propulsion
+conference . IEEE, 2008, pp. 1–6.
+[8] G. Klunder, K. Malone, J. Mak, I. Wilmink, A. Schirokoff, N. Sihvola,
+C. Holm´ en, A. Berger, R. De Lange, W. Roeterdink et al. , “Impact of
+information and communication technologies on energy efﬁc iency in
+road transport-ﬁnal report,” 2009.
+[9] S. Lukic and A. Emadi, “Effects of drivetrain hybridizat ion on fuel
+economy and dynamic performance of parallel hybrid electri c vehicles,”
+inTransactions on Vehicular Technology Volume 53 . IEEE, 2004, pp.
+385–389.
+[10] S. Nazari, J. Siegel, R. Middleton, and A. Stefanopoulo u, “Power
+split supercharging: A mild hybrid approach to boost fuel ec onomy,”
+Energies , vol. 13, no. 24, p. 6580, 2020.
+[11] H. Kato, R. Ando, Y . Kondo, T. Suzuki, K. Matsuhashi, and
+S. Kobayashi, “Comparative measurements of the eco-drivin g effect
+between electric and internal combustion engine vehicles, ” in 2013
+World electric vehicle symposium and exhibition (EVS27) . IEEE, 2013,
+pp. 1–5.
+[12] D. Maamria, K. Gillet, G. Colin, Y . Chamaillard, and C. N ouillant,
+“Computation of eco-driving cycles for hybrid electric veh icles: Com-
+parative analysis,” Control Engineering Practice , vol. 71, pp. 44–52,
+2018.
+[13] T. Franke, M. G. Arend, R. C. McIlroy, and N. A. Stanton, “ Ecodriving
+in hybrid electric vehicles–exploring challenges for user -energy interac-
+tion,” Applied ergonomics , vol. 55, pp. 33–45, 2016.
+[14] W. Dib, A. Chasse, P. Moulin, A. Sciarretta, and G. Corde , “Optimal
+energy management for an electric vehicle in eco-driving ap plications,”
+Control Engineering Practice , vol. 29, pp. 299–307, 2014.
+[15] R. Zhang and E. Yao, “Eco-driving at signalised interse ctions for electric
+vehicles,” IET Intelligent Transport Systems , vol. 9, no. 5, pp. 488–497,
+2015.
+[16] C. Manzie, H. Watson, and S. Halgamuge, “Fuel economy im prove-
+ments for urban driving: Hybrid vs. intelligent vehicles,” Transportation
+Research Part C: Emerging Technologies , vol. 15, no. 1, pp. 1–16, 2007.
+[17] S. Nazari, N. Prakash, J. Siegel, and A. Stefanopoulou, “On the effec-
+tiveness of hybridization paired with eco-driving,” in 2019 American
+Control Conference (ACC) . IEEE, 2019, pp. 4635–4640.
+[18] V . Freyermuth, E. Fallas, and A. Rousseau, “Comparison of powertrain
+conﬁguration for plug-in hevs from a fuel economy perspecti ve,” in
+Journal of Engines . SAE International, 2009, pp. 3486–3491.
+10
+[19] G. Heppeler, M. Sonntag, U. Wohlhaupter, and O. Sawodny , “Predictive
+planning of optimal velocity and state of charge trajectori es for hybrid
+electric vehicles,” Control engineering practice , vol. 61, pp. 229–243,
+2017.
+[20] D. Chen, Y . Kim, M. Huang, and A. Stefanopoulou, “An iter ative and
+hierarchical approach to co-optimizing the velocity proﬁl e and power-
+split of plug-in hybrid electric vehicles,” in 2020 American Control
+Conference (ACC) . IEEE, 2020, pp. 3059–3064.
+[21] G. Padilla, S. Weiland, and M. Donkers, “A global optima l solution to
+the eco-driving problem,” IEEE control systems letters , vol. 2, no. 4, pp.
+599–604, 2018.
+[22] D. Chen, M. Huang, A. G. Stefanopoulou, and Y . Kim, “Co-o ptimization
+of velocity and charge-depletion for plug-in hybrid electr ic vehicles:
+Accounting for acceleration and jerk constraints,” Journal of Dynamic
+Systems, Measurement, and Control , vol. 144, no. 1, p. 011107, 2022.
+[23] D. Chen, N. Prakash, A. Stefanopoulou, M. Huang, Y . Kim, and S. Hotz,
+“Sequential optimization of velocity and charge depletion in a plug-in
+hybrid electric vehicle,” in 14th International Symposium on Advanced
+Vehicle Control , 2018.
+[24] S. Nazari, R. Middleton, K. Sugimori, J. Siegel, and A. S tefanopoulou,
+“Assessing a hybrid supercharged engine for diluted combus tion using
+a dynamic drive cycle simulation,” SAE International Journal of Alter-
+native Powertrains , vol. 7, no. 3, pp. 351–368, 2018.
+[25] T. Burress. (2012) Benchmarking of com-
+petitive technologies. [Online]. Available:
+https://www.energy.gov/eere/vehicles/articles/bench marking-state-art-technologies
+[26] R. H. Staunton, C. W. Ayers, L. Marlino, J. Chiasson, and B. Burress,
+“Evaluation of 2004 toyota prius hybrid electric drive syst em,” Oak
+Ridge National Lab.(ORNL), Oak Ridge, TN (United States), T ech.
+Rep., 2006.
+[27] T. Burress. (2012) Benchmarking of com-
+petitive technologies. [Online]. Available:
+https://www.energy.gov/eere/vehicles/articles/bench marking-competitive-technologies-2
+[28] T. A. Burress, S. L. Campbell, C. Coomer, C. W. Ayers, A. A .
+Wereszczak, J. P. Cunningham, L. D. Marlino, L. E. Seiber, an d H.-
+T. Lin, “Evaluation of the 2010 toyota prius hybrid synergy d rive
+system,” Oak Ridge National Lab.(ORNL), Oak Ridge, TN (Unit ed
+States). Power . . . , Tech. Rep., 2011.
+[29] (2011) Acdc published data. [Online]. Available:
+http://auto21.uwinnipeg.ca
+[30] R. Smith, S. Shahidinejad, D. Blair, and E. Bibeau, “Cha racterization of
+urban commuter driving proﬁles to optimize battery size in l ight-duty
+plug-in electric vehicles,” Transportation Research Part D: Transport
+and Environment , vol. 16, no. 3, pp. 218–224, 2011.
+[31] N. Prakash, A. G. Stefanopoulou, A. J. Moskalik, and M. J . Brusstar,
+“Use of the hypothetical lead (hl) vehicle trace: A new metho d for
+evaluating fuel consumption in automated driving,” in 2016 American
+Control Conference (ACC) . IEEE, 2016, pp. 3486–3491.
+[32] M. Treiber, A. Hennecke, and D. Helbing, “Congested tra fﬁc states in
+empirical observations and microscopic simulations,” Physical review E ,
+vol. 62, no. 2, p. 1805, 2000.
+[33] O. Sundstrom and L. Guzzella, “A generic dynamic progra mming
+matlab function,” in 2009 IEEE control applications,(CCA) & intelligent
+control,(ISIC) . IEEE, 2009, pp. 1625–1630.
+[34] A. Panday and H. O. Bansal, “A review of optimal energy ma nagement
+strategies for hybrid electric vehicle,” International Journal of Vehicular
+Technology , vol. 2014, 2014.
+[35] G. Paganelli, S. Delprat, T.-M. Guerra, J. Rimaux, and J .-J. Santin,
+“Equivalent consumption minimization strategy for parall el hybrid pow-
+ertrains,” in Vehicular Technology Conference. IEEE 55th Vehicular
+Technology Conference. VTC Spring 2002 (Cat. No. 02CH37367 ), vol. 4.
+IEEE, 2002, pp. 2076–2081.
+[36] H. Borhan, A. Vahidi, A. M. Phillips, M. L. Kuang, I. V . Ko lmanovsky,
+and S. Di Cairano, “Mpc-based energy management of a power-s plit
+hybrid electric vehicle,” IEEE Transactions on Control Systems Tech-
+nology , vol. 20, no. 3, pp. 593–603, 2011.
+[37] C.-C. Lin, H. Peng, and J. Grizzle, “A stochastic contro l strategy for
+hybrid electric vehicles,” in Proceedings of the 2004 American control
+conference , vol. 5. IEEE, 2004, pp. 4710–4715.
+[38] M. Stuhldreher, C. Schenk, J. Brakora, D. Hawkins, A. Mo skalik, and
+P. DeKraker, “Downsized boosted engine benchmarking and re sults,”
+SAE Technical Paper, Tech. Rep., 2015.APPENDIX A
+A. Vehicle and Driveline Model
+Backward simulation is used here to model the vehicle
+driveline and powertrain and formulate the global optimal
+energy management problem. This method determines the
+vehicle tractive force, Ft, using the vehicle speed and effective
+mass, vandMvrespectively, and the resistance forces on the
+vehicle, Fr, as follows
+Ft=Mvdv
+dt+Fr (11a)
+Fr=C0+C1v+C2v2(11b)
+Mv=mv+Jw+γ2(Jp)
+r2w(11c)
+in which, γis the gear ratio from the gearbox and ﬁnal drive
+ratio, mvis the vehicle mass, rwis wheel radius, Jwis the wheel
+inertia, and Jpis inertial of the powertrain. The coefﬁcients
+C0,C1, and C2are from EPA-reported dynamometer correction
+factors to calculate the resisting forces on the vehicle, in clud-
+ing aerodynamic drag and rolling resistance. In the next ste p,
+the wheel rotational speed ωw, and torque, τw, are determined
+as
+ωw=v
+rw(12a)
+τw=Ftrw (12b)
+Back propagating these values to the gearbox input shaft,
+the shaft rotational speed, ωg, and torque, τg, are
+ωg=γωw (13a)
+τg=τw
+γη−sgn(τw)
+g (13b)
+where ηgis the gearbox efﬁciency.
+The position of the clutch between the engine and the motor
+is used as the control input for engine start/stop, such that it is
+assumed that when the clutch is engaged, ( ue=1), the engine
+is turned on and when the clutch is open ( ue=0), the engine
+is turned off. To emulate the torque converter operation in
+an automatic transmission, the engine speed, ωeis limited to
+operating speeds higher than its idling speed, ωe,idle, when the
+engine is turned on
+ωe={
+max(ωg,ωe,idle)ifue=1
+0 otherwise.(14)
+The motor speed is equal to the engine speed when the
+engine is turned on and is equal to the gearbox inlet shaft spe ed
+when the engine is turned off. This assumption is valid by
+assuming that the low-level controllers are designed to avo id
+any unnecessary energy loss, such that the torque converter
+will be locked any time that the engine is turned off,
+ωm={ωeifue=1
+ωgotherwise.(15)
+11
+The torque converter model computes the turbine torque,
+τtct, and the pump torque, τtcp, using the speed ratio, SR,
+between its output and input shafts,
+SR=ωg
+ωm(16a)
+τtcp=(ωtcp
+K)2(16b)
+τtct=τtcp×TR (16c)
+where Kis the K-factor and TR is the torque ratio of the torque
+converter, both of which are functions of the speed ratio.
+The torque on the torque converter input shaft, which is the
+torque transmitted through both the torque converter clutc h
+and pump, τcp, is determined as follows
+τcp={
+τg ifωe≤ωg
+τtcp+max(0,τg−τtct)otherwise.(17)
+This equation imposes the following condition
+•τcpis equal to the drive cycle requested torque, when the
+torque converter is locked, which happens either when
+the engine clutch is closed ( ue=1 and ωe=ωg) or when
+the engine clutch is open and the engine is turned off
+(ue=0 and ωe=0).
+•When the torque converter clutch is open, meaning that
+the engine is turned on ( ue=1) and ωe>ωg, if the
+torque from the speed proﬁle is smaller than the turbine
+torque ( τg<τtct), the torque converter clutch does not
+carry any torque and the extra torque transmitted through
+the turbine is wasted in the friction brakes. The torque
+on the input shaft of the torque converter is equal to the
+pump torque in this situation.
+•Finally, when the torque converter clutch is open and the
+requested torque is larger than the turbine torque ( τg>
+τtct), this equation assumes that the remaining needed
+torque is transferred by the torque converter clutch, which
+will be in a slipping condition.
+Note that this work does not model the torque converter
+clutch position as an independent control input, but rather it
+is assumed that the torque converter low-level controller i s
+designed to prevent any avoidable energy loss within the sys -
+tem. The model of the torque converter operation is embedded
+within the equations (15) to (17).
+B. Engine and Motor Model
+The electric motor and the engine supply the requested
+torque on the crankshaft. The engine torque is computed as
+τe=max(τmin
+e,τcp−τm) (18)
+(19)
+in which τmin
+eis the minimum engine torque. This equation
+implied that during braking events the energy that is not
+recovered through regenerative braking is wasted in the fri ction
+brakes. The maximum allowable engine torque is determined
+as follows,τmax
+e={
+0 if ue=0
+τmax
+e(ωe)otherwise.(20)
+The engine fuel ﬂow rate, ˙ mf, is calculated using its Brake
+Speciﬁc Fuel Consumption (BSFC) map and its brake power,
+Pe. A minimum fuel ﬂow rate, ˙ mf,min, of 1.0kg
+his assumed
+for the modeled engine
+BSFC=Γ(τe,ωe) (21a)
+˜˙mf=Pe×BSFC (21b)
+˙mf=max(˜˙mf,˙mmin
+f) (21c)
+The motor electric power, Pmis computed using its electro-
+mechanical conversion efﬁciency, ηm, as follows
+Pm=τm×ωm×η−sgn(τm)
+m (22)
+ηm=Γ(ωm,τm) (23)
+C. Battery Model
+An open circuit voltage with a single resistor is used to
+model the battery state of charge dynamics. The battery powe r,
+Pb, is computed by adding the motor electric power, the
+auxiliary power, Paux, and the power needed for cranking
+the engine during each start event, assumed to be 1 [kJ].
+The battery current, Ib, is calculated using Pband the battery
+voltage, Ub,
+Pb=Pm+Paux+Ps/s×max(
+xe(k−1),0)
+(24a)
+Ib=Pb
+Ub(ζ)(24b)
+The battery open circuit voltage, Uoc, which is function of
+the battery state of charge, ζ, is used to compute the battery
+terminal voltage as follows
+Ub=1
+2Uoc(ζ)+√
+U2oc(ζ)
+4−PbRb (25a)
+(25b)
+Finally, a coulomb counting method is used for state of charg e
+dynamics as follows
+˙ζ=−Ib
+3600 Cn(26)
+where Cnis the battery capacity in [A.h].
