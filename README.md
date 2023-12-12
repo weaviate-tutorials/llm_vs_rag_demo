@@ -1,25 +1,19 @@
-# Project Title
-
-## Table of contents
-- [Introduction](#introduction)
-- [Installation](#installation)
-- [Usage](#usage)
-- [License](#license)
-- [Contact](#contact)
+# LLM vs RAG
 
 ## Introduction
 
-This demo shows benefits of using retrieval augmented generation over vanilla LLM usage. 
-
-## Installation
-
-TBC
+This demo shows benefits of using retrieval augmented generation over vanilla LLM usage.
 
 ## Usage
 
-Try prompts like:
-- ["explain imagebind like I am five", "imagebind model"]
-- ["what are the benefits of hybrid search?", "hybrid search"]
+### Basic example
+
+1. Run an instance of Weaviate. 
+2. Run `eg1_create_collection.py` to create a collection.
+3. Run `eg2_import_arxiv.py` and `eg2_import_pdf.py` to import text data from various PDFs.
+4. Run `streamlit run Demo_app.py` from your shell.
+
+There is also a multi-modal example - documentation to come :).
 
 ## License
 

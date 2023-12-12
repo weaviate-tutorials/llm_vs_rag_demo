@@ -35,7 +35,8 @@ full_prompt = prompt + llm.PROMPT_TEMPLATE
 
 
 # e.g. try:
-# hybrid search difference, or hybridsearch
+# Hybrid: hybrid search difference, or hybridsearch
+# ImageBind: multimodality
 
 if search_type == "Keyword":
     srch_query = chunks.query.bm25
